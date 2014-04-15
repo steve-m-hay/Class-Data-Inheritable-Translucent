@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Class-Data-Inheritable-Translucent
-version:            1.00
+version:            1.01
 abstract:           Inheritable, overridable, translucent class data / object attributes
 author:
     - Ryan McGuigan, Steve Hay (shay@cpan.org)

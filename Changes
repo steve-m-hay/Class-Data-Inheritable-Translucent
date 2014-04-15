@@ -1,5 +1,12 @@
 Revision history for Class-Data-Inheritable-Translucent
 
+1.01  Mon Nov 09 2009
+    - Incorporated two improvements based on code in Class::Accessor:
+      - Generated accessor methods are now named using Sub::Name if that module
+        is available.
+      - Existing accessor methods (or their aliases) are no longer overwritten
+        by mk_translucent().
+
 1.00  Wed Nov 05 2009
     - Changed mk_translucent() so that when overriding the translucent class
       default value on a sub-class object it doesn't affect the inherited

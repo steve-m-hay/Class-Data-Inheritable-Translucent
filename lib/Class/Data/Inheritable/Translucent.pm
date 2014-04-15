@@ -9,7 +9,11 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
 
 =cut
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
+
+if (eval { require Sub::Name }) {
+    Sub::Name->import;
+}
 
 =head1 SYNOPSIS
 
@@ -71,11 +75,23 @@ sub mk_translucent {
         return $data;
     };
 
-    my $alias = "_${attribute}_accessor";
-    {
-        no strict 'refs';
-        *{$declaredclass.'::'.$attribute} = $accessor;
-        *{$declaredclass.'::'.$alias}     = $accessor;
+    my $name = "${declaredclass}::$attribute";
+    my $subnamed = 0;
+    unless (defined &{$name}) {
+        subname($name, $accessor) if defined &subname;
+        $subnamed = 1;
+        {
+            no strict 'refs';
+            *{$name}  = $accessor;
+        }
+    }
+    my $alias = "${declaredclass}::_${attribute}_accessor";
+    unless (defined &{$alias}) {
+        subname($alias, $accessor) if defined &subname and not $subnamed;
+        {
+            no strict 'refs';
+            *{$alias} = $accessor;
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 package Foo;
 use base 'Class::Data::Inheritable::Translucent';
@@ -8,6 +8,9 @@ use base 'Class::Data::Inheritable::Translucent';
 __PACKAGE__->mk_translucent(foo => "base");
 __PACKAGE__->mk_translucent(bar => "inherited");
 __PACKAGE__->mk_translucent(baz => "object");
+__PACKAGE__->mk_translucent(attr => 1);
+sub attr { return 2 }
+sub _attr_accessor { return 3 }
 
 sub new {
     return bless {}, shift;
@@ -47,3 +50,6 @@ is($subobj->baz, "whatever", "sub-class undef Ok");
 is(Bar->baz, "whatever", "sub-class default still Ok");
 Foo->baz("object");
 is(Bar->baz, "object", "sub-class default still not overridden");
+
+is(Foo->attr, "2", "Existing name is not ovewrwritten");
+is(Foo->_attr_accessor, "3", "Existing alias is not ovewrwritten");
