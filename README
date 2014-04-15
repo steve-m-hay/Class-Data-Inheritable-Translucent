@@ -28,7 +28,7 @@ DESCRIPTION
     attributes.
 
     Object data, by default, is stored in $obj->{$attribute}. See the
-    ->attrs method, explained below, on how to change that.
+    attrs() method, explained below, on how to change that.
 
 METHODS
     mk_translucent
@@ -41,7 +41,7 @@ METHODS
         hashrefs, or you wish to store your object attributes in a different
         location, eg. $obj->{attrs}, you should override this method.
         Class::Data::Inheritable::Translucent stores object attributes in
-        $obj->attrs->{$attribute}.
+        $obj->attrs()->{$attribute}.
 
 AUTHOR
     Steve Hay <F<shay@cpan.org>> is now maintaining
@@ -56,7 +56,7 @@ ACKNOWLEDGEMENTS
 
 COPYRIGHT & LICENSE
     Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
-    Changes in Version 1.00 onwards Copyright (C) 2009 Steve Hay
+    Changes in Version 1.00 onwards Copyright (C) 2009, 2011 Steve Hay
 
     mk_translucent is based on mk_classdata from
     Class::Data::Inheritable, Copyright Damian Conway and Michael G Schwern,

@@ -1,5 +1,10 @@
 Revision history for Class-Data-Inheritable-Translucent
 
+1.02  Fri Jun 03 2011
+    - Fixed the default implementation of attrs() to work as documented, so that
+      each attribute really is now stored in $obj rather than $obj->{attrs} by
+      default.
+
 1.01  Mon Nov 09 2009
     - Incorporated two improvements based on code in Class::Accessor:
       - Generated accessor methods are now named using Sub::Name if that module

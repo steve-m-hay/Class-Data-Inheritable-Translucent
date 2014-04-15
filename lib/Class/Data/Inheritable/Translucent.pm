@@ -9,7 +9,7 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
 
 =cut
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 if (eval { require Sub::Name }) {
     Sub::Name->import;
@@ -41,7 +41,7 @@ if (eval { require Sub::Name }) {
 This module is based on Class::Data::Inheritable, and is largely the same,
 except the class data accessors double as translucent object attributes.
 
-Object data, by default, is stored in $obj->{$attribute}.  See the ->attrs
+Object data, by default, is stored in $obj->{$attribute}.  See the attrs()
 method, explained below, on how to change that.
 
 =head1 METHODS
@@ -104,14 +104,13 @@ returns the object that called it, which should be a hash reference for storing
 object attributes.  If your objects are not hashrefs, or you wish to store your
 object attributes in a different location, eg. $obj->{attrs}, you should
 override this method.  Class::Data::Inheritable::Translucent stores object
-attributes in $obj->attrs->{$attribute}.
+attributes in $obj->attrs()->{$attribute}.
 
 =cut
 
 sub attrs {
     my $obj = shift;
-    $obj->{attrs} = {} unless defined $obj->{attrs};
-    return $obj->{attrs};
+    return $obj;
 }
 
 =pod
@@ -134,7 +133,7 @@ Thanks to Damian Conway for L<Class::Data::Inheritable>
 =head1 COPYRIGHT & LICENSE
 
 Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
-Changes in Version 1.00 onwards Copyright (C) 2009 Steve Hay
+Changes in Version 1.00 onwards Copyright (C) 2009, 2011 Steve Hay
 
 mk_translucent is based on mk_classdata from Class::Data::Inheritable,
 Copyright Damian Conway and Michael G Schwern, licensed under the terms of the
