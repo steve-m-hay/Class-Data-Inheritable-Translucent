@@ -5,12 +5,11 @@ use warnings;
 
 =head1 NAME
 
-Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent
-class data / object attributes
+Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent class data / object attributes
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '1.00';
 
 =head1 SYNOPSIS
 
@@ -35,7 +34,7 @@ our $VERSION = '0.01';
 
 =head1 DESCRIPTION
 
-This module is derived from Class::Data::Inheritable, and is largely the same,
+This module is based on Class::Data::Inheritable, and is largely the same,
 except the class data accessors double as translucent object attributes.
 
 Object data, by default, is stored in $obj->{$attribute}.  See the ->attrs
@@ -52,8 +51,6 @@ Creates inheritable class data / translucent instance attributes
 =cut
 
 sub mk_translucent {
-    no strict 'refs';
-
     my ($declaredclass, $attribute, $data) = @_;
 
     my $accessor = sub {
@@ -61,7 +58,7 @@ sub mk_translucent {
         my $wantclass = ref($_[0]) || $_[0];
 
         return $wantclass->mk_translucent($attribute)->(@_)
-          if @_>1 && $wantclass ne $declaredclass;
+          if @_>1 && !$obj && $wantclass ne $declaredclass;
 
         if ($obj) {
             my $attrs = $obj->attrs;
@@ -75,8 +72,11 @@ sub mk_translucent {
     };
 
     my $alias = "_${attribute}_accessor";
-    *{$declaredclass.'::'.$attribute} = $accessor;
-    *{$declaredclass.'::'.$alias}     = $accessor;
+    {
+        no strict 'refs';
+        *{$declaredclass.'::'.$attribute} = $accessor;
+        *{$declaredclass.'::'.$alias}     = $accessor;
+    }
 }
 
 =pod
@@ -104,9 +104,12 @@ sub attrs {
 
 =head1 AUTHOR
 
-Ryan McGuigan, <ryan@cardweb.com>
+Steve Hay <F<shay@cpan.org>> is now maintaining
+Class::Data::Inheritable::Translucent as of version 1.00
 
-Derived from Class::Data::Inheritable, originally by Damian Conway
+Originally by Ryan McGuigan
+
+Based on Class::Data::Inheritable, originally by Damian Conway
 
 =head1 ACKNOWLEDGEMENTS
 
@@ -114,9 +117,10 @@ Thanks to Damian Conway for L<Class::Data::Inheritable>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2005 Ryan McGuigan, all rights reserved.
+Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
+Changes in Version 1.00 onwards Copyright (C) 2009 Steve Hay
 
-mk_translucent is derived from mk_classdata from Class::Data::Inheritable,
+mk_translucent is based on mk_classdata from Class::Data::Inheritable,
 Copyright Damian Conway and Michael G Schwern, licensed under the terms of the
 Perl Artistic License.
 
@@ -126,7 +130,8 @@ L<http://www.perl.com/perl/misc/Artistic.html>)
 
 =head1 BUGS
 
-Please report any bugs or feature requests to ryan@cardweb.com.
+Please report any bugs or feature requests on the CPAN Request Tracker at
+F<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Class-Data-Inheritable-Translucent>.
 
 =head1 SEE ALSO
 

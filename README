@@ -23,7 +23,7 @@ SYNOPSIS
       print $obj->bar; # prints "baz"
 
 DESCRIPTION
-    This module is derived from Class::Data::Inheritable, and is largely the
+    This module is based on Class::Data::Inheritable, and is largely the
     same, except the class data accessors double as translucent object
     attributes.
 
@@ -44,17 +44,21 @@ METHODS
         $obj->attrs->{$attribute}.
 
 AUTHOR
-    Ryan McGuigan, <ryan@cardweb.com>
+    Steve Hay <F<shay@cpan.org>> is now maintaining
+    Class::Data::Inheritable::Translucent as of version 1.00
 
-    Derived from Class::Data::Inheritable, originally by Damian Conway
+    Originally by Ryan McGuigan
+
+    Based on Class::Data::Inheritable, originally by Damian Conway
 
 ACKNOWLEDGEMENTS
     Thanks to Damian Conway for Class::Data::Inheritable
 
 COPYRIGHT & LICENSE
-    Copyright 2005 Ryan McGuigan, all rights reserved.
+    Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
+    Changes in Version 1.00 onwards Copyright (C) 2009 Steve Hay
 
-    mk_translucent is derived from mk_classdata from
+    mk_translucent is based on mk_classdata from
     Class::Data::Inheritable, Copyright Damian Conway and Michael G Schwern,
     licensed under the terms of the Perl Artistic License.
 
@@ -63,7 +67,8 @@ COPYRIGHT & LICENSE
     <http://www.perl.com/perl/misc/Artistic.html>)
 
 BUGS
-    Please report any bugs or feature requests to ryan@cardweb.com.
+    Please report any bugs or feature requests on the CPAN Request Tracker at
+    F<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Class-Data-Inheritable-Translucent>.
 
 SEE ALSO
     * Class::Data::Inheritable
