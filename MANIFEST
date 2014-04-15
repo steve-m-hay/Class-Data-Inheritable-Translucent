@@ -1,0 +1,11 @@
+Changes
+MANIFEST
+META.yml # Will be created by "make dist"
+Makefile.PL
+README
+lib/Class/Data/Inheritable/Translucent.pm
+t/00-load.t
+t/01-basic_tests.t
+t/02-nonhash_objects.t
+t/pod-coverage.t
+t/pod.t
