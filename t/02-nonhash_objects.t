@@ -1,5 +1,7 @@
 #!perl -T
 
+use 5.008001;
+
 package Foo;
 
 use Test::More tests => 1;

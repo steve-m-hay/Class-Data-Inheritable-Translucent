@@ -1,26 +1,84 @@
+#!perl
+#===============================================================================
+#
+# Makefile.PL
+#
+# DESCRIPTION
+#   Makefile creation script.
+#
+# COPYRIGHT
+#   Copyright (C) 2014 Steve Hay.  All rights reserved.
+#
+# LICENCE
+#   You may distribute under the terms of either the GNU General Public License
+#   or the Artistic License, as specified in the LICENCE file.
+#
+#===============================================================================
+
+use 5.008001;
+
 use strict;
 use warnings;
-no warnings 'numeric';
-use ExtUtils::MakeMaker;
 
-my @extras = ();
+use ExtUtils::MakeMaker 6.64;
+use ExtUtils::MakeMaker qw(WriteMakefile);
 
-push(@extras,
-     ABSTRACT_FROM => 'lib/Class/Data/Inheritable/Translucent.pm',
-     AUTHOR        => 'Ryan McGuigan, Steve Hay (shay@cpan.org)')
-    if ($ExtUtils::MakeMaker::VERSION >= 5.4301);
-     
-push(@extras,
-     LICENSE       => 'perl')
-    if ($ExtUtils::MakeMaker::VERSION >= 6.3001);
+#===============================================================================
+# MAIN PROGRAM
+#===============================================================================
 
-WriteMakefile(
-    NAME                => 'Class::Data::Inheritable::Translucent',
-    VERSION_FROM        => 'lib/Class/Data/Inheritable/Translucent.pm',
-    PL_FILES            => {},
-    PREREQ_PM => {
-        'Test::More' => 0,
-    },
-    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    @extras
-);
+MAIN: {
+    WriteMakefile(
+        NAME          => 'Class::Data::Inheritable::Translucent',
+        ABSTRACT_FROM => 'lib/Class/Data/Inheritable/Translucent.pm',
+        AUTHOR        => 'Ryan McGuigan, Steve Hay <shay@cpan.org>',
+        LICENSE       => 'perl_5',
+        VERSION_FROM  => 'lib/Class/Data/Inheritable/Translucent.pm',
+
+        META_MERGE => {
+            'meta-spec' => {
+                version => 2
+            },
+
+            resources => {
+                repository => {
+                    type => 'git',
+                    url  => 'git://github.com/steve-m-hay/Class-Data-Inheritable-Translucent.git',
+                    web  => 'https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent'
+                }
+            }
+        },
+
+        MIN_PERL_VERSION => '5.008001',
+
+        CONFIGURE_REQUIRES => {
+            'ExtUtils::MakeMaker' => '6.64',
+            'strict'              => 0,
+            'warnings'            => 0
+        },
+
+        TEST_REQUIRES => {
+            'Test::More'          => 0,
+          # 'Test::Pod'           => '1.14', # Only required for POD testing
+          # 'Test::Pod::Coverage' => '1.04', # Only required for POD testing
+            'base'                => 0,
+            'constant'            => 0,
+            'strict'              => 0,
+            'warnings'            => 0
+        },
+
+        PREREQ_PM => {
+          # 'Sub::Name'           => 0,      # Recommended
+            'strict'              => 0,
+            'warnings'            => 0
+        },
+
+        dist => {
+            PREOP   => 'find $(DISTVNAME) -type f -print|xargs chmod 0644 && ' .
+                       'find $(DISTVNAME) -type d -print|xargs chmod 0755',
+            TO_UNIX => 'find $(DISTVNAME) -type f -print|xargs dos2unix'
+        }
+    );
+}
+
+#===============================================================================

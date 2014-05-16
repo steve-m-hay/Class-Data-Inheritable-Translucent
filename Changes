@@ -1,5 +1,17 @@
 Revision history for Class-Data-Inheritable-Translucent
 
+1.03  TODO
+    - Uploaded source code to GitHub and included repository URLS in meta data.
+    - Included META.json file in addition to META.yml.
+    - Set minimum required ExtUtils::MakeMaker version to 6.64 to ensure that
+      all parameters used are supported, to save jumping through hoops to
+      support earlier versions.  (This should not be a problem since
+      ExtUtils::MakeMaker 6.64 is easily installed into Perl 5.8.1 and above,
+      that being the whole point of the new choice of minimum supported Perl
+      version.)
+    - Set minimum required Perl version to 5.8.1.  This is in line with the
+      minimum requirement of the "Perl Toolchain".
+
 1.02  Fri Jun 03 2011
     - Fixed the default implementation of attrs() to work as documented, so that
       each attribute really is now stored in $obj rather than $obj->{attrs} by
