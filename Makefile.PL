@@ -41,11 +41,7 @@ MAIN: {
             },
 
             resources => {
-                repository => {
-                    type => 'git',
-                    url  => 'git://github.com/steve-m-hay/Class-Data-Inheritable-Translucent.git',
-                    web  => 'https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent'
-                }
+                repository => 'https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent'
             }
         },
 
