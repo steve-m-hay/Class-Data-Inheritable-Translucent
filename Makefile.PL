@@ -41,7 +41,35 @@ MAIN: {
             },
 
             resources => {
-                repository => 'https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent'
+                repository => {
+                    type => 'git',
+                    url  => 'https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent.git'
+                }
+            },
+
+            optional_features => {
+                podtest => {
+                    description => 'POD testing',
+                    prereqs => {
+                        test => {
+                            recommends => {
+                                'Test::Pod'           => '1.14',
+                                'Test::Pod::Coverage' => '1.04'
+                            }
+                        }
+                    }
+                },
+
+                subname => {
+                    description => 'Naming subroutines in caller() messages etc.',
+                    prereqs => {
+                        runtime => {
+                            recommends => {
+                                'Sub::Name' => '0'
+                            }
+                        }
+                    }
+                }
             }
         },
 
@@ -49,29 +77,29 @@ MAIN: {
 
         CONFIGURE_REQUIRES => {
             'ExtUtils::MakeMaker' => '6.64',
-            'strict'              => 0,
-            'warnings'            => 0
+            'perl'                => '5.008001',
+            'strict'              => '0',
+            'warnings'            => '0'
         },
 
         TEST_REQUIRES => {
-            'Test::More'          => 0,
-          # 'Test::Pod'           => '1.14', # Only required for POD testing
-          # 'Test::Pod::Coverage' => '1.04', # Only required for POD testing
-            'base'                => 0,
-            'constant'            => 0,
-            'strict'              => 0,
-            'warnings'            => 0
+            'Test::More' => '0',
+            'base'       => '0',
+            'constant'   => '0',
+            'perl'       => '5.008001',
+            'strict'     => '0',
+            'warnings'   => '0'
         },
 
         PREREQ_PM => {
-          # 'Sub::Name'           => 0,      # Recommended
-            'strict'              => 0,
-            'warnings'            => 0
+            'perl'     => '5.008001',
+            'strict'   => '0',
+            'warnings' => '0'
         },
 
         dist => {
-            PREOP   => 'find $(DISTVNAME) -type f -print|xargs chmod 0644 && ' .
-                       'find $(DISTVNAME) -type d -print|xargs chmod 0755',
+            PREOP   => 'find $(DISTVNAME) -type d -print|xargs chmod 0755 && ' .
+                       'find $(DISTVNAME) -type f -print|xargs chmod 0644',
             TO_UNIX => 'find $(DISTVNAME) -type f -print|xargs dos2unix'
         }
     );
