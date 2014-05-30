@@ -1,6 +1,6 @@
 Revision history for Class-Data-Inheritable-Translucent
 
-1.04  TODO
+1.04  Fri May 30 2014
     - The modules listed as recommendations of optional features are actually
       requirements of those features.
 
