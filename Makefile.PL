@@ -52,7 +52,7 @@ MAIN: {
                     description => 'POD testing',
                     prereqs => {
                         test => {
-                            recommends => {
+                            requires => {
                                 'Test::Pod'           => '1.14',
                                 'Test::Pod::Coverage' => '1.04'
                             }
@@ -64,7 +64,7 @@ MAIN: {
                     description => 'Naming subroutines in caller() messages etc.',
                     prereqs => {
                         runtime => {
-                            recommends => {
+                            requires => {
                                 'Sub::Name' => '0'
                             }
                         }

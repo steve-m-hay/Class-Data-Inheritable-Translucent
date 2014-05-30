@@ -1,7 +1,8 @@
 Revision history for Class-Data-Inheritable-Translucent
 
 1.04  TODO
-    - TODO
+    - The modules listed as recommendations of optional features are actually
+      requirements of those features.
 
 1.03  Thu May 29 2014
     - Uploaded source code to GitHub and included repository URLs in metadata.
