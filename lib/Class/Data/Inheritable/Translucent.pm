@@ -11,7 +11,7 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
 
 =cut
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 if (eval { require Sub::Name }) {
     Sub::Name->import;
