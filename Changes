@@ -1,7 +1,7 @@
 Revision history for Class-Data-Inheritable-Translucent
 
 1.05  TODO
-    - TODO
+    - Simplified Makefile.PL requirements.
 
 1.04  Fri May 30 2014
     - The modules listed as recommendations of optional features are actually

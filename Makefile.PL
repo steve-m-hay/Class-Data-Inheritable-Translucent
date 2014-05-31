@@ -85,14 +85,10 @@ MAIN: {
         TEST_REQUIRES => {
             'Test::More' => '0',
             'base'       => '0',
-            'constant'   => '0',
-            'perl'       => '5.008001',
-            'strict'     => '0',
-            'warnings'   => '0'
+            'constant'   => '0'
         },
 
         PREREQ_PM => {
-            'perl'     => '5.008001',
             'strict'   => '0',
             'warnings' => '0'
         },
