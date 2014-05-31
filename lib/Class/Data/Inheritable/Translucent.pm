@@ -156,7 +156,30 @@ F<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Class-Data-Inheritable-Transluc
 
 =item *
 
-L<Class::Data::Inheritable>
+L<Class::Data::Inheritable> - Inheritable, overridable class data without the
+translucent object data.
+
+=item *
+
+L<Class::Data::Accessor> - An almost exact duplicate of this module, created
+only a fortnight before it!
+
+However, as of version 0.04004, it doesn't make use of L<Sub::Name> (so all
+accessor methods created by it will show up as C<__ANON__> in, e.g. profiling
+tools), it doesn't support non hash-based objects, it doesn't support the use of
+C<undef> to wipe out an overridden object attribute's value and reinherit the
+class default, and it will blindly overwrite any existing (accessor) methods.
+It has also been deprecated in favour of L<Class::Accessor::Grouped> (or
+L<Moose>).
+
+=item *
+
+L<Class::Accessor::Grouped> - The C<inherited> accessor type does the same thing
+again.
+
+However, as of version 0.10010, whilst this does make use of L<Sub::Name>, it
+still doesn't support non hash-based objects or C<undef> to reset an overridden
+object attribute's value, and also blindly overwrites existing methods.
 
 =item *
 
