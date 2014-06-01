@@ -52,7 +52,9 @@ method, explained below, on how to change that.
 
 =item B<mk_translucent>
 
-Creates inheritable class data / translucent instance attributes
+Creates inheritable class data / translucent instance attributes.  Does not
+install the accessor method if a subroutine of the same name already exists;
+likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 
 =cut
 
