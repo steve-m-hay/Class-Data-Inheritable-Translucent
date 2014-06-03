@@ -1,6 +1,7 @@
 Revision history for Class-Data-Inheritable-Translucent
 
 1.05  TODO
+    - Made code Perl::Critic clean.
     - Noted other modules that do almost exactly the same thing and documented
       perhaps the biggest difference from them: that accessor methods are not
       installed if the subroutines already exist.  (Fixes [cpan #96066].)

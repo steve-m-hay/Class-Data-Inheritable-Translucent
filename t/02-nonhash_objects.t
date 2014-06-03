@@ -2,6 +2,9 @@
 
 use 5.008001;
 
+use strict;
+use warnings;
+
 package Foo;
 
 use Test::More tests => 1;
@@ -20,8 +23,8 @@ sub attrs {
 }
 
 sub new {
-    my $proto = shift;
-    my $self = bless [qw/bar/];
+    my $class = shift;
+    my $self = bless [qw/bar/], $class;
 
     return $self;
 }

@@ -85,7 +85,7 @@ sub mk_translucent {
         subname($name, $accessor) if defined &subname;
         $subnamed = 1;
         {
-            no strict 'refs';
+            no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
             *{$name}  = $accessor;
         }
     }
@@ -93,7 +93,7 @@ sub mk_translucent {
     unless (defined &{$alias}) {
         subname($alias, $accessor) if defined &subname and not $subnamed;
         {
-            no strict 'refs';
+            no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
             *{$alias} = $accessor;
         }
     }
