@@ -48,6 +48,28 @@ MAIN: {
             },
 
             optional_features => {
+                subname => {
+                    description => 'Naming subroutines in caller() messages etc.',
+                    prereqs => {
+                        runtime => {
+                            requires => {
+                                'Sub::Name' => '0'
+                            }
+                        }
+                    }
+                },
+
+                critictest => {
+                    description => 'Perl::Critic testing',
+                    prereqs => {
+                        test => {
+                            requires => {
+                                'Test::Perl::Critic' => '0'
+                            }
+                        }
+                    }
+                },
+
                 podtest => {
                     description => 'POD testing',
                     prereqs => {
@@ -55,17 +77,6 @@ MAIN: {
                             requires => {
                                 'Test::Pod'           => '1.14',
                                 'Test::Pod::Coverage' => '1.04'
-                            }
-                        }
-                    }
-                },
-
-                subname => {
-                    description => 'Naming subroutines in caller() messages etc.',
-                    prereqs => {
-                        runtime => {
-                            requires => {
-                                'Sub::Name' => '0'
                             }
                         }
                     }
