@@ -123,12 +123,12 @@ sub attrs {
 
 =head1 AUTHOR
 
-Steve Hay <F<shay@cpan.org>> is now maintaining
-Class::Data::Inheritable::Translucent as of version 1.00
-
-Originally by Ryan McGuigan
+Ryan McGuigan
 
 Based on Class::Data::Inheritable, originally by Damian Conway
+
+Steve Hay E<lt>F<shay@cpan.org>E<gt> is now maintaining
+Class::Data::Inheritable::Translucent as of version 1.00
 
 =head1 ACKNOWLEDGEMENTS
 
@@ -137,7 +137,8 @@ Thanks to Damian Conway for L<Class::Data::Inheritable>
 =head1 COPYRIGHT & LICENSE
 
 Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
-Changes in Version 1.00 onwards Copyright (C) 2009, 2011 Steve Hay
+Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.  All
+rights reserved.
 
 mk_translucent is based on mk_classdata from Class::Data::Inheritable,
 Copyright Damian Conway and Michael G Schwern, licensed under the terms of the
