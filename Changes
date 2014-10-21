@@ -1,6 +1,7 @@
 Revision history for Class-Data-Inheritable-Translucent
 
 1.05  TODO
+    - Made Perl Critic, Pod and Pod Coverage tests skip unless AUTHOR_TESTING.
     - Added optional Perl::Critic testing.
     - Made code Perl::Critic clean.
     - Noted other modules that do almost exactly the same thing and documented
