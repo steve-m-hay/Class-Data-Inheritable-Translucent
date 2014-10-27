@@ -14,7 +14,7 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
     - Noted other modules that do almost exactly the same thing and documented
       perhaps the biggest difference from them: that accessor methods are not
-      installed if the subroutines already exist.  (Fixes [cpan #96066].)
+      installed if the subroutines already exist.  [CPAN RT#96066]
 
     - Simplified Makefile.PL requirements.
 
@@ -62,7 +62,7 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
       translucent class default value still used by other instances of that
       sub-class.  In fact, it was wrong even to install an override unless the
       attribute is actually being overriddeen on the sub-class itself rather
-      than on an instance of the sub-class.  (Fixes [cpan #51097].)
+      than on an instance of the sub-class.  [CPAN RT#51097]
 
     - Changed Makefile.PL to check $ExtUtils::MakeMaker::VERSION before setting
       ABSTRACT_FROM and AUTHOR.
