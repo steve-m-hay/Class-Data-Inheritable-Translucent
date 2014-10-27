@@ -151,7 +151,7 @@ L<http://www.perl.com/perl/misc/Artistic.html>)
 =head1 BUGS
 
 Please report any bugs or feature requests on the CPAN Request Tracker at
-F<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Class-Data-Inheritable-Translucent>.
+F<http://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
 
 =head1 SEE ALSO
 
