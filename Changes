@@ -2,6 +2,8 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
 1.05 Development
 
+    - Made mk_translucent() croak() if wrongly called as an object method.
+
     - Added optional Changes testing (skipped unless AUTHOR_TESTING).
 
     - Reformatted Changes file as per CPAN::Changes::Spec.

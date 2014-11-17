@@ -100,6 +100,7 @@ MAIN: {
         },
 
         PREREQ_PM => {
+            'Carp'     => '0',
             'strict'   => '0',
             'warnings' => '0'
         },

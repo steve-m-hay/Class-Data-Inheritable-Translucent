@@ -61,6 +61,11 @@ likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 sub mk_translucent {
     my ($declaredclass, $attribute, $data) = @_;
 
+    if (ref $declaredclass) {
+        require Carp;
+        Carp::croak("mk_translucent() is a class method, not an object method");
+    }
+
     my $accessor = sub {
         my $obj = ref($_[0]) ? $_[0] : undef;
         my $wantclass = ref($_[0]) || $_[0];
