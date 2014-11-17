@@ -43,8 +43,9 @@ if (eval { require Sub::Name }) {
 This module is based on Class::Data::Inheritable, and is largely the same,
 except the class data accessors double as translucent object attributes.
 
-Object data, by default, is stored in $obj->{$attribute}.  See the attrs()
-method, explained below, on how to change that.
+The value of object attribute $attribute, by default, is stored in
+$object->{$attribute}.  See the attrs() method, explained below, on how to
+change that.
 
 =head1 METHODS
 
@@ -59,29 +60,37 @@ likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 =cut
 
 sub mk_translucent {
-    my ($declaredclass, $attribute, $data) = @_;
+    my($class, $attribute, $value) = @_;
+    return $class->_mk_accessor($attribute, $value);
+}
+
+sub _mk_accessor {
+    my($declaredclass, $attribute, $value) = @_;
 
     if (ref $declaredclass) {
+        my $caller = (caller(1))[3];
+        $caller =~ s/^.*:://o;
         require Carp;
-        Carp::croak("mk_translucent() is a class method, not an object method");
+        Carp::croak("$caller() is a class method, not an object method");
     }
 
     my $accessor = sub {
-        my $obj = ref($_[0]) ? $_[0] : undef;
-        my $wantclass = ref($_[0]) || $_[0];
+        my $object = ref $_[0] ? $_[0] : undef;
+        my $class = ref $_[0] || $_[0];
 
-        return $wantclass->mk_translucent($attribute)->(@_)
-          if @_>1 && !$obj && $wantclass ne $declaredclass;
+        return $class->_mk_accessor($attribute)->(@_)
+          if @_ > 1 && !$object && $class ne $declaredclass;
 
-        if ($obj) {
-            my $attrs = $obj->attrs;
+        if ($object) {
+            my $attrs = $object->attrs();
             $attrs->{$attribute} = $_[1] if @_ > 1;
             return $attrs->{$attribute} if defined $attrs->{$attribute};
         }
         else {
-            $data = $_[1] if @_>1;
+            $value = $_[1] if @_ > 1;
         }
-        return $data;
+
+        return $value;
     };
 
     my $name = "${declaredclass}::$attribute";
@@ -92,6 +101,7 @@ sub mk_translucent {
         no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
         *{$name}  = $accessor;
     }
+
     my $alias = "${declaredclass}::_${attribute}_accessor";
     unless (defined &{$alias}) {
         subname($alias, $accessor) if defined &subname and not $subnamed;
@@ -109,15 +119,14 @@ sub mk_translucent {
 This method is called by the generated accessors and, by default, simply
 returns the object that called it, which should be a hash reference for storing
 object attributes.  If your objects are not hashrefs, or you wish to store your
-object attributes in a different location, eg. $obj->{attrs}, you should
-override this method.  Class::Data::Inheritable::Translucent stores object
-attributes in $obj->attrs()->{$attribute}.
+object attributes in a different location, e.g. $object->{attrs}, then you
+should override this method.  Class::Data::Inheritable::Translucent stores the
+value of object attribute $attribute in $object->attrs()->{$attribute}.
 
 =cut
 
 sub attrs {
-    my $obj = shift;
-    return $obj;
+    return $_[0];
 }
 
 =pod

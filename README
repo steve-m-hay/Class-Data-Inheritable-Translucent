@@ -27,52 +27,78 @@ DESCRIPTION
     same, except the class data accessors double as translucent object
     attributes.
 
-    Object data, by default, is stored in $obj->{$attribute}. See the
-    attrs() method, explained below, on how to change that.
+    The value of object attribute $attribute, by default, is stored in
+    $object->{$attribute}. See the attrs() method, explained below, on how
+    to change that.
 
 METHODS
     mk_translucent
-        Creates inheritable class data / translucent instance attributes
+        Creates inheritable class data / translucent instance attributes.
+        Does not install the accessor method if a subroutine of the same
+        name already exists; likewise for the alias method
+        (_<attribute>_accessor()).
 
     attrs
         This method is called by the generated accessors and, by default,
         simply returns the object that called it, which should be a hash
         reference for storing object attributes. If your objects are not
         hashrefs, or you wish to store your object attributes in a different
-        location, eg. $obj->{attrs}, you should override this method.
-        Class::Data::Inheritable::Translucent stores object attributes in
-        $obj->attrs()->{$attribute}.
+        location, e.g. $object->{attrs}, then you should override this
+        method. Class::Data::Inheritable::Translucent stores the value of
+        object attribute $attribute in $object->attrs()->{$attribute}.
 
 AUTHOR
     Ryan McGuigan
 
     Based on Class::Data::Inheritable, originally by Damian Conway
 
-    Steve Hay E<lt>F<shay@cpan.org>E<gt> is now maintaining
+    Steve Hay <shay@cpan.org> is now maintaining
     Class::Data::Inheritable::Translucent as of version 1.00
 
 ACKNOWLEDGEMENTS
     Thanks to Damian Conway for Class::Data::Inheritable
 
 COPYRIGHT & LICENSE
-    Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
-    Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.
-    All rights reserved.
+    Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved. Changes
+    in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay. All
+    rights reserved.
 
-    mk_translucent is based on mk_classdata from
-    Class::Data::Inheritable, Copyright Damian Conway and Michael G Schwern,
-    licensed under the terms of the Perl Artistic License.
+    mk_translucent is based on mk_classdata from Class::Data::Inheritable,
+    Copyright Damian Conway and Michael G Schwern, licensed under the terms
+    of the Perl Artistic License.
 
     This program is free software; It may be used, redistributed and/or
     modified under the terms of the Perl Artistic License (see
-    F<http://www.perl.com/perl/misc/Artistic.html>)
+    <http://www.perl.com/perl/misc/Artistic.html>)
 
 BUGS
-    Please report any bugs or feature requests on the CPAN Request Tracker at
-    F<http://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
+    Please report any bugs or feature requests on the CPAN Request Tracker
+    at
+    http://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-T
+    ranslucent.
 
 SEE ALSO
-    * Class::Data::Inheritable
+    * Class::Data::Inheritable - Inheritable, overridable class data without
+      the translucent object data.
+
+    * Class::Data::Accessor - An almost exact duplicate of this module,
+      created only a fortnight before it!
+
+      However, as of version 0.04004, it doesn't make use of Sub::Name (so
+      all accessor methods created by it will show up as "__ANON__" in, e.g.
+      profiling tools), it doesn't support non hash-based objects, it
+      doesn't support the use of "undef" to wipe out an overridden object
+      attribute's value and reinherit the class default, and it will blindly
+      overwrite any existing (accessor) methods. It has also been deprecated
+      in favour of Class::Accessor::Grouped (or Moose).
+
+    * Class::Accessor::Grouped - The "inherited" accessor type does the same
+      thing again.
+
+      However, as of version 0.10010, whilst this does make use of
+      Sub::Name, it still doesn't support non hash-based objects or "undef"
+      to reset an overridden object attribute's value, and also blindly
+      overwrites existing methods.
 
     * perltooc - Tom's OO Tutorial for Class Data in Perl - a pretty nice
       Class Data tutorial for Perl
