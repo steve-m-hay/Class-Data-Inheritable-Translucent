@@ -84,18 +84,14 @@ sub mk_translucent {
     unless (defined &{$name}) {
         subname($name, $accessor) if defined &subname;
         $subnamed = 1;
-        {
-            no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
-            *{$name}  = $accessor;
-        }
+        no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
+        *{$name}  = $accessor;
     }
     my $alias = "${declaredclass}::_${attribute}_accessor";
     unless (defined &{$alias}) {
         subname($alias, $accessor) if defined &subname and not $subnamed;
-        {
-            no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
-            *{$alias} = $accessor;
-        }
+        no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
+        *{$alias} = $accessor;
     }
 }
 
