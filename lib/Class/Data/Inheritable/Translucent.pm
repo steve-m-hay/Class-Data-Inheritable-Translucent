@@ -93,6 +93,8 @@ sub mk_translucent {
         no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
         *{$alias} = $accessor;
     }
+
+    return $accessor;
 }
 
 =pod
