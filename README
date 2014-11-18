@@ -4,39 +4,41 @@ NAME
 
 SYNOPSIS
       package Foo;
-      use base qw(Class::Data::Inheritable::Translucent);
+      use parent qw(Class::Data::Inheritable::Translucent);
+      sub new { bless {}, shift }
 
-      Foo->mk_class_accessor("cbar");
-      Foo->mk_translucent_accessor("tbar");
+      Foo->mk_class_accessor(cattr => "bar");
+      Foo->mk_translucent_accessor(tattr => "bar");
+      Foo->mk_object_accessor(oattr => "bar");
 
-      Foo->cbar("baz");
-      Foo->tbar("baz");
-      $obj = Foo->new;
-      print $obj->cbar; # prints "baz"
-      print $obj->tbar; # prints "baz"
-      print Foo->cbar;  # prints "baz"
-      print Foo->tbar;  # prints "baz"
+      my $obj = Foo->new;
+      print $obj->cattr; # prints "bar"
+      print $obj->tattr; # prints "bar"
+      print $obj->oattr; # prints "bar"
+      print Foo->cattr;  # prints "bar"
+      print Foo->tattr;  # prints "bar"
 
-      $obj->cbar("whatever");
-      $obj->tbar("whatever");
-      print $obj->cbar; # prints "whatever"
-      print $obj->tbar; # prints "whatever"
-      print Foo->cbar;  # prints "whatever"
-      print Foo->tbar;  # prints "baz"
+      $obj->cattr("baz");
+      $obj->tattr("baz");
+      $obj->oattr("baz");
+      print $obj->cattr; # prints "baz"
+      print $obj->tattr; # prints "baz"
+      print $obj->oattr; # prints "baz"
+      print Foo->cattr;  # prints "baz"
+      print Foo->tattr;  # prints "bar"
 
-      Foo->cbar("qux");
-      Foo->tbar("qux");
-      print $obj->cbar; # prints "qux"
-      print $obj->tbar; # prints "whatever"
-      print Foo->cbar;  # prints "qux"
-      print Foo->tbar;  # prints "qux"
+      Foo->cattr("qux");
+      Foo->tattr("qux");
+      print $obj->cattr; # prints "qux"
+      print $obj->tattr; # prints "baz"
+      print Foo->cattr;  # prints "qux"
+      print Foo->tattr;  # prints "qux"
 
-      $obj->cbar(undef);
-      $obj->tbar(undef);
-      print $obj->cbar; # prints nothing
-      print $obj->tbar; # prints "qux"
-      print Foo->cbar;  # prints nothing
-      print Foo->tbar;  # prints "qux"
+      delete $obj->{tattr};
+      delete $obj->{oattr};
+      print $obj->tattr; # prints "qux"
+      print $obj->oattr; # prints "bar"
+      print Foo->tattr;  # prints "qux"
 
 DESCRIPTION
     This module is based on Class::Data::Inheritable, and is largely the
@@ -63,6 +65,11 @@ METHODS
     mk_translucent
         Alias for mk_translucent_accessor(), for backwards compatibility.
 
+    mk_object_accessor
+        Creates a non-translucent object attribute accessor. Does not
+        install the accessor method if a subroutine of the same name already
+        exists; likewise for the alias method (_<attribute>_accessor()).
+
     attrs
         This method is called by the generated accessors and, by default,
         simply returns the object that called it, which should be a hash
@@ -71,6 +78,20 @@ METHODS
         location, e.g. $object->{attrs}, then you should override this
         method. Class::Data::Inheritable::Translucent stores the value of
         object attribute $attribute in $object->attrs()->{$attribute}.
+
+COMPATIBILITY
+    Before version 2.00 of this module, an object attribute that had been
+    set to override translucent class data could be "reset" to reveal the
+    inherited class data value by setting it to the undefined value.
+
+    As of version 2.00 of this module, the attribute must now be deleted
+    from the object in order to have the same effect. If your objects are
+    hashrefs then this is done simply with "delete $object->{$attribute}";
+    more generally, and in particular if you have overridden attrs(), this
+    is done with "delete $object->attrs()->{$attribute}".
+
+    THIS IS AN INCOMPATIBLE CHANGE. EXISTING SOFTWARE THAT USES THIS FEATURE
+    WILL NEED TO BE MODIFIED.
 
 AUTHOR
     Ryan McGuigan
@@ -117,19 +138,16 @@ SEE ALSO
       fortnight before it!
 
       However, as of version 0.04004, it also doesn't make use of Sub::Name
-      or support non hash-based objects, does blindly overwrite any existing
-      methods, and it also doesn't support the use of "undef" to wipe out an
-      overridden object attribute's value and reinherit the class default.
-      It has also been deprecated in favour of Class::Accessor::Grouped (or
-      Moose).
+      or support non hash-based objects and does overwrite any existing
+      methods. It has also been deprecated in favour of
+      Class::Accessor::Grouped (or Moose).
 
     * Class::Accessor::Grouped - The "inherited" accessor type also does the
       same thing as the mk_translucent_accessor() part of this module.
 
-      However, as of version 0.10010, whilst it does make use of Sub::Name,
-      it still doesn't support non hash-based objects, does blindly
-      overwrite existing methods, and doesn't support "undef" to reset an
-      overridden object attribute's value
+      However, as of version 0.10012, whilst it does make use of Sub::Name,
+      it doesn't support non hash-based objects and does overwrite any
+      existing methods.
 
     * perltooc - Tom's OO Tutorial for Class Data in Perl - a pretty nice
       Class Data tutorial for Perl

@@ -1,6 +1,27 @@
 Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
-1.05 Development
+2.00 Development
+
+    - Added mk_object_accessor(), which creates a non-translucent object
+      attribute accessor.  In this case there is no inherited translucent class
+      data for the object to override, but a default value can still be
+      specified, and in theory restored later in a similar manner to removing an
+      object's override of translucent class data to reveal the inherited class
+      data value.  However, it would be quite unnatural to set such an attribute
+      to the undefined value in order to restore the original default value, so
+      a new, more obvious, behaviour has been introduced:  The attribute must be
+      deleted from the object, i.e. delete()d from the attrs() hash.
+
+      The same behaviour has been extended to include translucent object
+      attributes as well, partly for consistency, and partly because it is a
+      more natural behaviour (and no longer precludes the possibility of
+      actually setting an attribute to the undefined value if required!).  Two
+      related CPAN modules (Class::Data::Accessor and Class::Accessor::Grouped)
+      also behave this way.  This feature was not documented other than being
+      illustrated in the SYNOPSIS but because of the change in behaviour that
+      some users may have been relying on, the $VERSION has been given a major
+      version bump and appropriate notices have been added to the man page and
+      README.
 
     - Renamed mk_translucent() to mk_translucent_accessor() (retaining the old
       name for backwards compatibility) and added mk_class_accessor(), which

@@ -13,8 +13,9 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
 
 use constant _ATTR_TYPE_CLASS       => 1;
 use constant _ATTR_TYPE_TRANSLUCENT => 2;
+use constant _ATTR_TYPE_OBJECT      => 3;
 
-our $VERSION = '1.05';
+our $VERSION = '2.00';
 
 if (eval { require Sub::Name }) {
     Sub::Name->import;
@@ -23,39 +24,41 @@ if (eval { require Sub::Name }) {
 =head1 SYNOPSIS
 
   package Foo;
-  use base qw(Class::Data::Inheritable::Translucent);
+  use parent qw(Class::Data::Inheritable::Translucent);
+  sub new { bless {}, shift }
 
-  Foo->mk_class_accessor("cbar");
-  Foo->mk_translucent_accessor("tbar");
+  Foo->mk_class_accessor(cattr => "bar");
+  Foo->mk_translucent_accessor(tattr => "bar");
+  Foo->mk_object_accessor(oattr => "bar");
 
-  Foo->cbar("baz");
-  Foo->tbar("baz");
-  $obj = Foo->new;
-  print $obj->cbar; # prints "baz"
-  print $obj->tbar; # prints "baz"
-  print Foo->cbar;  # prints "baz"
-  print Foo->tbar;  # prints "baz"
+  my $obj = Foo->new;
+  print $obj->cattr; # prints "bar"
+  print $obj->tattr; # prints "bar"
+  print $obj->oattr; # prints "bar"
+  print Foo->cattr;  # prints "bar"
+  print Foo->tattr;  # prints "bar"
 
-  $obj->cbar("whatever");
-  $obj->tbar("whatever");
-  print $obj->cbar; # prints "whatever"
-  print $obj->tbar; # prints "whatever"
-  print Foo->cbar;  # prints "whatever"
-  print Foo->tbar;  # prints "baz"
+  $obj->cattr("baz");
+  $obj->tattr("baz");
+  $obj->oattr("baz");
+  print $obj->cattr; # prints "baz"
+  print $obj->tattr; # prints "baz"
+  print $obj->oattr; # prints "baz"
+  print Foo->cattr;  # prints "baz"
+  print Foo->tattr;  # prints "bar"
 
-  Foo->cbar("qux");
-  Foo->tbar("qux");
-  print $obj->cbar; # prints "qux"
-  print $obj->tbar; # prints "whatever"
-  print Foo->cbar;  # prints "qux"
-  print Foo->tbar;  # prints "qux"
+  Foo->cattr("qux");
+  Foo->tattr("qux");
+  print $obj->cattr; # prints "qux"
+  print $obj->tattr; # prints "baz"
+  print Foo->cattr;  # prints "qux"
+  print Foo->tattr;  # prints "qux"
 
-  $obj->cbar(undef);
-  $obj->tbar(undef);
-  print $obj->cbar; # prints nothing
-  print $obj->tbar; # prints "qux"
-  print Foo->cbar;  # prints nothing
-  print Foo->tbar;  # prints "qux"
+  delete $obj->{tattr};
+  delete $obj->{oattr};
+  print $obj->tattr; # prints "qux"
+  print $obj->oattr; # prints "bar"
+  print Foo->tattr;  # prints "qux"
 
 =head1 DESCRIPTION
 
@@ -88,6 +91,12 @@ a subroutine of the same name already exists; likewise for the alias method
 
 Alias for mk_translucent_accessor(), for backwards compatibility.
 
+=item B<mk_object_accessor>
+
+Creates a non-translucent object attribute accessor.  Does not
+install the accessor method if a subroutine of the same name already exists;
+likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
+
 =cut
 
 sub mk_class_accessor {
@@ -102,6 +111,11 @@ sub mk_translucent_accessor{
 
 *mk_translucent = \&mk_translucent_accessor;
 
+sub mk_object_accessor {
+    my($class, $attribute, $value) = @_;
+    return $class->_mk_accessor($attribute, $value, _ATTR_TYPE_OBJECT);
+}
+
 sub _mk_accessor {
     my($declaredclass, $attribute, $value, $type) = @_;
 
@@ -113,10 +127,19 @@ sub _mk_accessor {
     }
 
     my $translucentattr = ($type == _ATTR_TYPE_TRANSLUCENT);
+    my $objectattr      = ($type == _ATTR_TYPE_OBJECT);
 
     my $accessor = sub {
         my $object = ref $_[0] ? $_[0] : undef;
-        my $usingobject = ($translucentattr && $object);
+
+        if ($objectattr and not $object) {
+            my $caller = (caller(0))[3];
+            $caller =~ s/^.*:://o;
+            require Carp;
+            Carp::croak("$caller() is an object method, not a class method");
+        }
+
+        my $usingobject = (($translucentattr && $object) || $objectattr);
         my $class = ref $_[0] || $_[0];
 
         return $class->_mk_accessor($attribute, $value, $type)->(@_)
@@ -125,7 +148,7 @@ sub _mk_accessor {
         if ($usingobject) {
             my $attrs = $object->attrs();
             $attrs->{$attribute} = $_[1] if @_ > 1;
-            return $attrs->{$attribute} if defined $attrs->{$attribute};
+            return $attrs->{$attribute} if exists $attrs->{$attribute};
         }
         else {
             $value = $_[1] if @_ > 1;
@@ -173,6 +196,21 @@ sub attrs {
 =pod
 
 =back
+
+=head1 COMPATIBILITY
+
+Before version 2.00 of this module, an object attribute that had been set to
+override translucent class data could be "reset" to reveal the inherited class
+data value by setting it to the undefined value.
+
+As of version 2.00 of this module, the attribute must now be deleted from the
+object in order to have the same effect.  If your objects are hashrefs then this
+is done simply with "delete $object->{$attribute}"; more generally, and in
+particular if you have overridden attrs(), this is done with
+"delete $object->attrs()->{$attribute}".
+
+B<THIS IS AN INCOMPATIBLE CHANGE.  EXISTING SOFTWARE THAT USES THIS FEATURE WILL
+NEED TO BE MODIFIED.>
 
 =head1 AUTHOR
 
@@ -227,19 +265,16 @@ mk_translucent_accessor() part of this module, created only a fortnight before
 it!
 
 However, as of version 0.04004, it also doesn't make use of L<Sub::Name> or
-support non hash-based objects, does blindly overwrite any existing methods, and
-it also doesn't support the use of C<undef> to wipe out an overridden object
-attribute's value and reinherit the class default.  It has also been deprecated
-in favour of L<Class::Accessor::Grouped> (or L<Moose>).
+support non hash-based objects and does overwrite any existing methods.  It has
+also been deprecated in favour of L<Class::Accessor::Grouped> (or L<Moose>).
 
 =item *
 
 L<Class::Accessor::Grouped> - The C<inherited> accessor type also does the same
 thing as the mk_translucent_accessor() part of this module.
 
-However, as of version 0.10010, whilst it does make use of L<Sub::Name>, it
-still doesn't support non hash-based objects, does blindly overwrite existing
-methods, and doesn't support C<undef> to reset an overridden object attribute's value
+However, as of version 0.10012, whilst it does make use of L<Sub::Name>, it
+doesn't support non hash-based objects and does overwrite any existing methods.
 
 =item *
 

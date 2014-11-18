@@ -8,6 +8,7 @@ t/00-load.t
 t/01-basic_tests.t
 t/02-nonhash_objects.t
 t/03-class_tests.t
+t/04-object_tests.t
 t/changes.t
 t/critic.t
 t/pod-coverage.t
