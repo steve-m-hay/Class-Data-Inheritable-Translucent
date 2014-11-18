@@ -2,6 +2,17 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
 1.05 Development
 
+    - Renamed mk_translucent() to mk_translucent_accessor() (retaining the old
+      name for backwards compatibility) and added mk_class_accessor(), which
+      does exactly what mk_classdata() does in Class::Data::Inheritable except
+      that it makes use of Sub::Name, supports the use of non hash-based objects
+      and doesn't blindly overwrite any existing (accessor) methods.  Thus, if,
+      like me, you're bugged that the maintainer of Class::Data::Inheritable has
+      never seen fit to address CPAN RT#51228 or CPAN RT#6281, you can now use
+      mk_class_accessor() here instead (without your class data accessor taking
+      on the double life of a translucent object attribute accessor, as would be
+      the case if you simply used mk_translucent_accessor() instead).
+
     - Made mk_translucent() croak() if wrongly called as an object method.
 
     - Added optional Changes testing (skipped unless AUTHOR_TESTING).

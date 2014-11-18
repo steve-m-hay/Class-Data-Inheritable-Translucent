@@ -11,7 +11,7 @@ use Test::More tests => 1;
 
 use base 'Class::Data::Inheritable::Translucent';
 
-__PACKAGE__->mk_translucent(foo => "bar");
+__PACKAGE__->mk_translucent_accessor(foo => "bar");
 
 use constant FOO   => 0;
 use constant ATTRS => 1;

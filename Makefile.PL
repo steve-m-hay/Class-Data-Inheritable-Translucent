@@ -95,12 +95,12 @@ MAIN: {
 
         TEST_REQUIRES => {
             'Test::More' => '0',
-            'base'       => '0',
-            'constant'   => '0'
+            'base'       => '0'
         },
 
         PREREQ_PM => {
             'Carp'     => '0',
+            'constant' => '0',
             'strict'   => '0',
             'warnings' => '0'
         },

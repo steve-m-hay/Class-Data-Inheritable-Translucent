@@ -10,10 +10,10 @@ use Test::More tests => 18;
 package Foo;
 use base 'Class::Data::Inheritable::Translucent';
 
-__PACKAGE__->mk_translucent(foo => "base");
-__PACKAGE__->mk_translucent(bar => "inherited");
-__PACKAGE__->mk_translucent(baz => "object");
-__PACKAGE__->mk_translucent(attr => 1);
+__PACKAGE__->mk_translucent_accessor(foo => "base");
+__PACKAGE__->mk_translucent_accessor(bar => "inherited");
+__PACKAGE__->mk_translucent_accessor(baz => "object");
+__PACKAGE__->mk_translucent_accessor(attr => 1);
 sub attr { return 2 }
 sub _attr_accessor { return 3 }
 
@@ -26,7 +26,7 @@ use base 'Foo';
 
 package main;
 
-is(Foo->foo, "base", "mk_translucent Ok");
+is(Foo->foo, "base", "mk_translucent_accessor Ok");
 Foo->foo("foobar");
 is(Foo->foo, "foobar", "class data Ok");
 
