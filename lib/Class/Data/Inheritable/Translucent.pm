@@ -23,8 +23,9 @@ use 5.008001;
 use strict;
 use warnings;
 
-if (eval { require Sub::Name }) {
-    Sub::Name->import;
+use Carp qw(croak);
+BEGIN {
+    Sub::Name->import(qw(subname)) if eval { require Sub::Name; 1 };
 }
 
 use constant _ATTR_TYPE_CLASS       => 1;
@@ -35,7 +36,11 @@ use constant _ATTR_TYPE_OBJECT      => 3;
 # CLASS INITIALIZATION
 #===============================================================================
 
-our $VERSION = '2.00';
+our($VERSION);
+
+BEGIN {
+    $VERSION = '2.00';
+}
 
 #===============================================================================
 # PUBLIC METHODS
@@ -64,8 +69,7 @@ sub _mk_accessor {
     if (ref $declaredclass) {
         my $caller = (caller(1))[3];
         $caller =~ s/^.*:://o;
-        require Carp;
-        Carp::croak("$caller() is a class method, not an object method");
+        croak("$caller() is a class method, not an object method");
     }
 
     my $translucentattr = ($type == _ATTR_TYPE_TRANSLUCENT);
@@ -77,8 +81,7 @@ sub _mk_accessor {
         if ($objectattr and not $object) {
             my $caller = (caller(0))[3];
             $caller =~ s/^.*:://o;
-            require Carp;
-            Carp::croak("$caller() is an object method, not a class method");
+            croak("$caller() is an object method, not a class method");
         }
 
         my $usingobject = (($translucentattr && $object) || $objectattr);
