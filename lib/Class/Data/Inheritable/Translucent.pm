@@ -63,6 +63,14 @@ sub mk_object_accessor {
     return $class->_mk_accessor($attribute, $value, _ATTR_TYPE_OBJECT);
 }
 
+sub attrs {
+    return $_[0];
+}
+
+#===============================================================================
+# PROTECTED METHODS
+#===============================================================================
+
 sub _mk_accessor {
     my($declaredclass, $attribute, $value, $type) = @_;
 
@@ -119,10 +127,6 @@ sub _mk_accessor {
     }
 
     return $accessor;
-}
-
-sub attrs {
-    return $_[0];
 }
 
 1;
