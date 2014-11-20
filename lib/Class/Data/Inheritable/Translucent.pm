@@ -346,6 +346,10 @@ F<http://www.cpan.org/authors/id/S/SH/SHAY/> or
 
 F<http://www.cpan.org/modules/by-module/Class/>.
 
+=head1 INSTALLATION
+
+See the F<INSTALL> file.
+
 =head1 AUTHOR
 
 Ryan McGuigan
