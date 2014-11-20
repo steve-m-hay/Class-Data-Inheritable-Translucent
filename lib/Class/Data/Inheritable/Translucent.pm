@@ -1,3 +1,21 @@
+#===============================================================================
+#
+# lib/Class/Data/Inheritable/Translucent.pm
+#
+# DESCRIPTION
+#   Inheritable, overridable, translucent class data / object attributes.
+#
+# COPYRIGHT
+#   Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
+#   Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.
+#   All rights reserved.
+#
+# LICENCE
+#   You may distribute under the terms of either the GNU General Public License
+#   or the Artistic License, as specified in the LICENCE file.
+#
+#===============================================================================
+
 package Class::Data::Inheritable::Translucent;
 
 use 5.008001;
@@ -5,15 +23,23 @@ use 5.008001;
 use strict;
 use warnings;
 
+if (eval { require Sub::Name }) {
+    Sub::Name->import;
+}
+
 use constant _ATTR_TYPE_CLASS       => 1;
 use constant _ATTR_TYPE_TRANSLUCENT => 2;
 use constant _ATTR_TYPE_OBJECT      => 3;
 
+#===============================================================================
+# CLASS INITIALIZATION
+#===============================================================================
+
 our $VERSION = '2.00';
 
-if (eval { require Sub::Name }) {
-    Sub::Name->import;
-}
+#===============================================================================
+# PUBLIC METHODS
+#===============================================================================
 
 sub mk_class_accessor {
     my($class, $attribute, $value) = @_;
@@ -100,6 +126,10 @@ sub attrs {
 
 __END__
 
+#===============================================================================
+# DOCUMENTATION
+#===============================================================================
+
 =head1 NAME
 
 Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent class data / object attributes
@@ -153,9 +183,9 @@ The value of object attribute $attribute, by default, is stored in
 $object->{$attribute}.  See the attrs() method, explained below, on how to
 change that.
 
-=head1 METHODS
+=head2 Methods
 
-=over
+=over 4
 
 =item B<mk_class_accessor>
 
@@ -191,6 +221,29 @@ value of object attribute $attribute in $object->attrs()->{$attribute}.
 
 =back
 
+=head1 DIAGNOSTICS
+
+=head2 Warnings and Error Messages
+
+This module may produce the following diagnostic messages.  They are classified
+as follows (a la L<perldiag>):
+
+    (W) A warning (optional).
+    (F) A fatal error (trappable).
+    (I) An internal error that you should never see (trappable).
+
+=over 4
+
+=item %s() is a class method, not an object method
+
+(F) TODO
+
+=item %s() is an object method, not a class method
+
+(F) TODO
+
+=back
+
 =head1 COMPATIBILITY
 
 Before version 2.00 of this module, an object attribute that had been set to
@@ -206,41 +259,28 @@ particular if you have overridden attrs(), this is done with
 B<THIS IS AN INCOMPATIBLE CHANGE.  EXISTING SOFTWARE THAT USES THIS FEATURE WILL
 NEED TO BE MODIFIED.>
 
-=head1 AUTHOR
+=head1 FEEDBACK
 
-Ryan McGuigan
+Patches, bug reports, suggestions or any other feedback is welcome.
 
-Based on Class::Data::Inheritable, originally by Damian Conway
+Bugs can be reported on the CPAN Request Tracker at
+F<https://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
 
-Steve Hay E<lt>F<shay@cpan.org>E<gt> is now maintaining
-Class::Data::Inheritable::Translucent as of version 1.00
+Open bugs on the CPAN Request Tracker can be viewed at
+F<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Dist=Class-Data-Inheritable-Translucent>.
 
-=head1 ACKNOWLEDGEMENTS
+Please test this distribution.  See CPAN Testers Reports at
+F<http://www.cpantesters.org/> for details of how to get involved.
 
-Thanks to Damian Conway for L<Class::Data::Inheritable>
+Previous test results on CPAN Testers Reports can be viewed at
+F<http://www.cpantesters.org/distro/C/Class-Data-Inheritable-Translucent.html>.
 
-=head1 COPYRIGHT & LICENSE
-
-Version 0.01 Copyright 2005 Ryan McGuigan, all rights reserved.
-Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.  All
-rights reserved.
-
-_mk_accessor is based on mk_classdata from Class::Data::Inheritable,
-Copyright Damian Conway and Michael G Schwern, licensed under the terms of the
-Perl Artistic License.
-
-This program is free software; It may be used, redistributed and/or modified
-under the terms of the Perl Artistic License (see
-L<http://www.perl.com/perl/misc/Artistic.html>)
-
-=head1 BUGS
-
-Please report any bugs or feature requests on the CPAN Request Tracker at
-F<http://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
+Please rate this distribution on CPAN Ratings at
+F<http://cpanratings.perl.org/rate/?distribution=Class-Data-Inheritable-Translucent>.
 
 =head1 SEE ALSO
 
-=over 2
+=over 4
 
 =item *
 
@@ -281,4 +321,56 @@ The source.  It's quite short, and simple enough.
 
 =back
 
+=head1 ACKNOWLEDGEMENTS
+
+The C<_mk_accessor()> method is based on the C<mk_classdata()> method in the
+Class::Data::Inheritable module, written by Damian Conway.
+
+=head1 AVAILABILITY
+
+The latest version of this module is available from CPAN (see
+L<perlmodlib/"CPAN"> for details) at
+
+F<https://metacpan.org/release/Class-Data-Inheritable-Translucent> or
+
+F<http://search.cpan.org/dist/Class-Data-Inheritable-Translucent/> or
+
+F<http://www.cpan.org/authors/id/S/SH/SHAY/> or
+
+F<http://www.cpan.org/modules/by-module/Class/>.
+
+=head1 AUTHOR
+
+Ryan McGuigan
+
+Steve Hay E<lt>F<shay@cpan.org>E<gt> is now maintaining
+Class::Data::Inheritable::Translucent as of version 1.00
+
+=head1 COPYRIGHT
+
+Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
+
+Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.  All
+rights reserved.
+
+=head1 LICENCE
+
+This module is free software; you can redistribute it and/or modify it under the
+same terms as Perl itself, i.e. under the terms of either the GNU General Public
+License or the Artistic License, as specified in the F<LICENCE> file.
+
+=head1 VERSION
+
+Version 2.00
+
+=head1 DATE
+
+TODO
+
+=head1 HISTORY
+
+See the F<Changes> file.
+
 =cut
+
+#===============================================================================
