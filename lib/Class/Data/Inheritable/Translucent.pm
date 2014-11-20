@@ -5,12 +5,6 @@ use 5.008001;
 use strict;
 use warnings;
 
-=head1 NAME
-
-Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent class data / object attributes
-
-=cut
-
 use constant _ATTR_TYPE_CLASS       => 1;
 use constant _ATTR_TYPE_TRANSLUCENT => 2;
 use constant _ATTR_TYPE_OBJECT      => 3;
@@ -20,84 +14,6 @@ our $VERSION = '2.00';
 if (eval { require Sub::Name }) {
     Sub::Name->import;
 }
-
-=head1 SYNOPSIS
-
-  package Foo;
-  use parent qw(Class::Data::Inheritable::Translucent);
-  sub new { bless {}, shift }
-
-  Foo->mk_class_accessor(cattr => "bar");
-  Foo->mk_translucent_accessor(tattr => "bar");
-  Foo->mk_object_accessor(oattr => "bar");
-
-  my $obj = Foo->new;
-  print $obj->cattr; # prints "bar"
-  print $obj->tattr; # prints "bar"
-  print $obj->oattr; # prints "bar"
-  print Foo->cattr;  # prints "bar"
-  print Foo->tattr;  # prints "bar"
-
-  $obj->cattr("baz");
-  $obj->tattr("baz");
-  $obj->oattr("baz");
-  print $obj->cattr; # prints "baz"
-  print $obj->tattr; # prints "baz"
-  print $obj->oattr; # prints "baz"
-  print Foo->cattr;  # prints "baz"
-  print Foo->tattr;  # prints "bar"
-
-  Foo->cattr("qux");
-  Foo->tattr("qux");
-  print $obj->cattr; # prints "qux"
-  print $obj->tattr; # prints "baz"
-  print Foo->cattr;  # prints "qux"
-  print Foo->tattr;  # prints "qux"
-
-  delete $obj->{tattr};
-  delete $obj->{oattr};
-  print $obj->tattr; # prints "qux"
-  print $obj->oattr; # prints "bar"
-  print Foo->tattr;  # prints "qux"
-
-=head1 DESCRIPTION
-
-This module is based on Class::Data::Inheritable, and is largely the same
-except the class data accessors optionally double as translucent object
-attribute accessors.
-
-The value of object attribute $attribute, by default, is stored in
-$object->{$attribute}.  See the attrs() method, explained below, on how to
-change that.
-
-=head1 METHODS
-
-=over
-
-=item B<mk_class_accessor>
-
-Creates an accessor for inheritable, overridable class data.  Does not install
-the accessor method if a subroutine of the same name already exists; likewise
-for the alias method (_E<lt>attributeE<gt>_accessor()).
-
-=item B<mk_translucent_accessor>
-
-Creates an accessor for inheritable, overridable class data which doubles as a
-translucent object attribute accessor.  Does not install the accessor method if
-a subroutine of the same name already exists; likewise for the alias method
-(_E<lt>attributeE<gt>_accessor()).
-
-=item B<mk_translucent>
-
-Alias for mk_translucent_accessor(), for backwards compatibility.
-
-=item B<mk_object_accessor>
-
-Creates a non-translucent object attribute accessor.  Does not
-install the accessor method if a subroutine of the same name already exists;
-likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
-
-=cut
 
 sub mk_class_accessor {
     my($class, $attribute, $value) = @_;
@@ -176,7 +92,93 @@ sub _mk_accessor {
     return $accessor;
 }
 
-=pod
+sub attrs {
+    return $_[0];
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent class data / object attributes
+
+=head1 SYNOPSIS
+
+  package Foo;
+  use parent qw(Class::Data::Inheritable::Translucent);
+  sub new { bless {}, shift }
+
+  Foo->mk_class_accessor(cattr => "bar");
+  Foo->mk_translucent_accessor(tattr => "bar");
+  Foo->mk_object_accessor(oattr => "bar");
+
+  my $obj = Foo->new;
+  print $obj->cattr; # prints "bar"
+  print $obj->tattr; # prints "bar"
+  print $obj->oattr; # prints "bar"
+  print Foo->cattr;  # prints "bar"
+  print Foo->tattr;  # prints "bar"
+
+  $obj->cattr("baz");
+  $obj->tattr("baz");
+  $obj->oattr("baz");
+  print $obj->cattr; # prints "baz"
+  print $obj->tattr; # prints "baz"
+  print $obj->oattr; # prints "baz"
+  print Foo->cattr;  # prints "baz"
+  print Foo->tattr;  # prints "bar"
+
+  Foo->cattr("qux");
+  Foo->tattr("qux");
+  print $obj->cattr; # prints "qux"
+  print $obj->tattr; # prints "baz"
+  print Foo->cattr;  # prints "qux"
+  print Foo->tattr;  # prints "qux"
+
+  delete $obj->{tattr};
+  delete $obj->{oattr};
+  print $obj->tattr; # prints "qux"
+  print $obj->oattr; # prints "bar"
+  print Foo->tattr;  # prints "qux"
+
+=head1 DESCRIPTION
+
+This module is based on Class::Data::Inheritable, and is largely the same
+except the class data accessors optionally double as translucent object
+attribute accessors.
+
+The value of object attribute $attribute, by default, is stored in
+$object->{$attribute}.  See the attrs() method, explained below, on how to
+change that.
+
+=head1 METHODS
+
+=over
+
+=item B<mk_class_accessor>
+
+Creates an accessor for inheritable, overridable class data.  Does not install
+the accessor method if a subroutine of the same name already exists; likewise
+for the alias method (_E<lt>attributeE<gt>_accessor()).
+
+=item B<mk_translucent_accessor>
+
+Creates an accessor for inheritable, overridable class data which doubles as a
+translucent object attribute accessor.  Does not install the accessor method if
+a subroutine of the same name already exists; likewise for the alias method
+(_E<lt>attributeE<gt>_accessor()).
+
+=item B<mk_translucent>
+
+Alias for mk_translucent_accessor(), for backwards compatibility.
+
+=item B<mk_object_accessor>
+
+Creates a non-translucent object attribute accessor.  Does not
+install the accessor method if a subroutine of the same name already exists;
+likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 
 =item B<attrs>
 
@@ -186,14 +188,6 @@ object attributes.  If your objects are not hashrefs, or you wish to store your
 object attributes in a different location, e.g. $object->{attrs}, then you
 should override this method.  Class::Data::Inheritable::Translucent stores the
 value of object attribute $attribute in $object->attrs()->{$attribute}.
-
-=cut
-
-sub attrs {
-    return $_[0];
-}
-
-=pod
 
 =back
 
@@ -288,5 +282,3 @@ The source.  It's quite short, and simple enough.
 =back
 
 =cut
-
-1; # End of Class::Data::Inheritable::Translucent
