@@ -229,13 +229,16 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
 
 =head1 DESCRIPTION
 
-This module is based on Class::Data::Inheritable, and is largely the same
-except the class data accessors optionally double as translucent object
-attribute accessors.
+This module is based on Class::Data::Inheritable; the mk_class_accessor()
+method is largely the same as Class::Data::Inheritable's mk_classdata() method,
+but mk_translucent_accessor() creates class data accessors that double as
+translucent object attribute accessors.  Accessors for plain object attributes
+can also be created with mk_object_accessor().  Read-only accessors for all
+three types of data/attributes can also be created with mk_ro_class_accessor(),
+mk_ro_translucent_accessor() and mk_ro_object_accessor().
 
 The value of object attribute $attribute, by default, is stored in
-$object->{$attribute}.  See the attrs() method, explained below, on how to
-change that.
+$object->{$attribute}.  See the attrs() method on how to change that.
 
 =head2 Methods
 
