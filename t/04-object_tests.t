@@ -5,12 +5,13 @@ use 5.008001;
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 package Foo;
 use base 'Class::Data::Inheritable::Translucent';
 
 __PACKAGE__->mk_object_accessor(baz => "object");
+__PACKAGE__->mk_ro_object_accessor(ro => "readonly");
 
 sub new {
     return bless {}, shift;
@@ -24,3 +25,8 @@ $obj->baz("object a");
 is($obj->baz, "object a", "new value Ok");
 delete $obj->{baz};
 is($obj->baz, "object", "reset Ok");
+
+is($obj->ro, "readonly", "readonly attribute Ok");
+eval { $obj->ro(2) };
+ok $@ =~ /^ro is a read-only attribute/,
+   "readonly attribute can't be written";

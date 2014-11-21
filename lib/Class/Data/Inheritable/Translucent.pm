@@ -3,7 +3,9 @@
 # lib/Class/Data/Inheritable/Translucent.pm
 #
 # DESCRIPTION
-#   Inheritable, overridable, translucent class data / object attributes.
+#   Abstract base class providing class methods for creating accessors for
+#   inheritable, overridable and optionally translucent class data and for
+#   object attributes with default values.
 #
 # COPYRIGHT
 #   Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
@@ -32,6 +34,9 @@ use constant _ATTR_TYPE_CLASS       => 1;
 use constant _ATTR_TYPE_TRANSLUCENT => 2;
 use constant _ATTR_TYPE_OBJECT      => 3;
 
+use constant _ACCESS_TYPE_READONLY  => 1;
+use constant _ACCESS_TYPE_READWRITE => 2;
+
 #===============================================================================
 # CLASS INITIALIZATION
 #===============================================================================
@@ -46,22 +51,47 @@ BEGIN {
 # PUBLIC METHODS
 #===============================================================================
 
+#-------------------------------------------------------------------------------
+# Class methods
+#-------------------------------------------------------------------------------
+
 sub mk_class_accessor {
     my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value, _ATTR_TYPE_CLASS);
+    return $class->_mk_accessor($attribute, $value,
+                                _ATTR_TYPE_CLASS, _ACCESS_TYPE_READWRITE);
 }
 
 sub mk_translucent_accessor{
     my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value, _ATTR_TYPE_TRANSLUCENT);
+    return $class->_mk_accessor($attribute, $value,
+                                _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READWRITE);
 }
-
-*mk_translucent = \&mk_translucent_accessor;
 
 sub mk_object_accessor {
     my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value, _ATTR_TYPE_OBJECT);
+    return $class->_mk_accessor($attribute, $value,
+                                _ATTR_TYPE_OBJECT, _ACCESS_TYPE_READWRITE);
 }
+
+sub mk_ro_class_accessor {
+    my($class, $attribute, $value) = @_;
+    return $class->_mk_accessor($attribute, $value,
+                                _ATTR_TYPE_CLASS, _ACCESS_TYPE_READONLY);
+}
+
+sub mk_ro_translucent_accessor{
+    my($class, $attribute, $value) = @_;
+    return $class->_mk_accessor($attribute, $value,
+                                _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READONLY);
+}
+
+sub mk_ro_object_accessor {
+    my($class, $attribute, $value) = @_;
+    return $class->_mk_accessor($attribute, $value,
+                                _ATTR_TYPE_OBJECT, _ACCESS_TYPE_READONLY);
+}
+
+*mk_translucent = \&mk_translucent_accessor;
 
 sub attrs {
     return $_[0];
@@ -71,8 +101,12 @@ sub attrs {
 # PROTECTED METHODS
 #===============================================================================
 
+#-------------------------------------------------------------------------------
+# Class methods
+#-------------------------------------------------------------------------------
+
 sub _mk_accessor {
-    my($declaredclass, $attribute, $value, $type) = @_;
+    my($declaredclass, $attribute, $value, $type, $access) = @_;
 
     if (ref $declaredclass) {
         my $caller = (caller(1))[3];
@@ -82,6 +116,7 @@ sub _mk_accessor {
 
     my $translucentattr = ($type == _ATTR_TYPE_TRANSLUCENT);
     my $objectattr      = ($type == _ATTR_TYPE_OBJECT);
+    my $readonlyattr    = ($access == _ACCESS_TYPE_READONLY);
 
     my $accessor = sub {
         my $object = ref $_[0] ? $_[0] : undef;
@@ -92,10 +127,16 @@ sub _mk_accessor {
             croak("$caller() is an object method, not a class method");
         }
 
+        if ($readonlyattr and @_ > 1) {
+            my $caller = (caller(0))[3];
+            $caller =~ s/^.*:://o;
+            croak("$attribute is a read-only attribute");
+        }
+
         my $usingobject = (($translucentattr && $object) || $objectattr);
         my $class = ref $_[0] || $_[0];
 
-        return $class->_mk_accessor($attribute, $value, $type)->(@_)
+        return $class->_mk_accessor($attribute, $value, $type, $access)->(@_)
           if @_ > 1 && !$usingobject && $class ne $declaredclass;
 
         if ($usingobject) {
@@ -147,9 +188,15 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
   use parent qw(Class::Data::Inheritable::Translucent);
   sub new { bless {}, shift }
 
+  # Read/write attributes
   Foo->mk_class_accessor(cattr => "bar");
   Foo->mk_translucent_accessor(tattr => "bar");
   Foo->mk_object_accessor(oattr => "bar");
+
+  # Read-only attributes
+  Foo->mk_ro_class_accessor(foo => 1);
+  Foo->mk_ro_translucent_accessor(bar => 1);
+  Foo->mk_ro_object_accessor(baz => 1);
 
   my $obj = Foo->new;
   print $obj->cattr; # prints "bar"
@@ -217,6 +264,22 @@ Creates a non-translucent object attribute accessor.  Does not
 install the accessor method if a subroutine of the same name already exists;
 likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 
+=item B<mk_ro_class_accessor>
+
+Same as C<mk_class_accessor> except that the data is read-only.
+
+=item B<mk_ro_translucent_accessor>
+
+Same as C<mk_translucent_accessor> except that the data/attribute is read-only.
+Objects can be initialized with a non-default value for the attribute, but the
+value cannot subsequently be changed via the accessor method.
+
+=item B<mk_ro_object_accessor>
+
+Same as C<mk_object_accessor> except that the attribute is read-only.  Objects
+can be initialized with a non-default value for the attribute, but the value
+cannot subsequently be changed via the accessor method.
+
 =item B<attrs>
 
 This method is called by the generated accessors and, by default, simply
@@ -242,6 +305,10 @@ as follows (a la L<perldiag>):
 =over 4
 
 =item %s() is a class method, not an object method
+
+(F) TODO
+
+=item %s is a read-only attribute
 
 (F) TODO
 
