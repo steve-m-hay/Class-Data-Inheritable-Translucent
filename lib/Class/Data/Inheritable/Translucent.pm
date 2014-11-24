@@ -343,8 +343,8 @@ Patches, bug reports, suggestions or any other feedback is welcome.
 Bugs can be reported on the CPAN Request Tracker at
 F<https://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
 
-Open bugs on the CPAN Request Tracker can be viewed at
-F<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Dist=Class-Data-Inheritable-Translucent>.
+Active bugs on the CPAN Request Tracker can be viewed at
+F<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Queue=Class-Data-Inheritable-Translucent>.
 
 Please test this distribution.  See CPAN Testers Reports at
 F<http://www.cpantesters.org/> for details of how to get involved.

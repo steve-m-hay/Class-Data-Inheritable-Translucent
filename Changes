@@ -2,6 +2,8 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
 2.00 Development
 
+    - Fixed broken link for active bugs on the CPAN Request Tracker.
+
     - Added mk_object_accessor(), which creates a non-translucent object
       attribute accessor.  In this case there is no inherited translucent class
       data for the object to override, but a default value can still be
