@@ -26,9 +26,7 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
-BEGIN {
-    Sub::Name->import(qw(subname)) if eval { require Sub::Name; 1 };
-}
+BEGIN { eval { require Sub::Name; 1 } and Sub::Name->import(qw(subname)) }
 
 use constant _ATTR_TYPE_CLASS       => 1;
 use constant _ATTR_TYPE_TRANSLUCENT => 2;
@@ -48,56 +46,6 @@ BEGIN {
 }
 
 #===============================================================================
-# PUBLIC METHODS
-#===============================================================================
-
-#-------------------------------------------------------------------------------
-# Class methods
-#-------------------------------------------------------------------------------
-
-sub mk_class_accessor {
-    my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value,
-                                _ATTR_TYPE_CLASS, _ACCESS_TYPE_READWRITE);
-}
-
-sub mk_translucent_accessor{
-    my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value,
-                                _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READWRITE);
-}
-
-sub mk_object_accessor {
-    my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value,
-                                _ATTR_TYPE_OBJECT, _ACCESS_TYPE_READWRITE);
-}
-
-sub mk_ro_class_accessor {
-    my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value,
-                                _ATTR_TYPE_CLASS, _ACCESS_TYPE_READONLY);
-}
-
-sub mk_ro_translucent_accessor{
-    my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value,
-                                _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READONLY);
-}
-
-sub mk_ro_object_accessor {
-    my($class, $attribute, $value) = @_;
-    return $class->_mk_accessor($attribute, $value,
-                                _ATTR_TYPE_OBJECT, _ACCESS_TYPE_READONLY);
-}
-
-*mk_translucent = \&mk_translucent_accessor;
-
-sub attrs {
-    return $_[0];
-}
-
-#===============================================================================
 # PROTECTED METHODS
 #===============================================================================
 
@@ -105,8 +53,46 @@ sub attrs {
 # Class methods
 #-------------------------------------------------------------------------------
 
+sub mk_class_accessor {
+    my($class, $attr, $value) = @_;
+    return $class->_mk_accessor($attr, $value,
+                                _ATTR_TYPE_CLASS, _ACCESS_TYPE_READWRITE);
+}
+
+sub mk_translucent_accessor{
+    my($class, $attr, $value) = @_;
+    return $class->_mk_accessor($attr, $value,
+                                _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READWRITE);
+}
+
+sub mk_object_accessor {
+    my($class, $attr, $value) = @_;
+    return $class->_mk_accessor($attr, $value,
+                                _ATTR_TYPE_OBJECT, _ACCESS_TYPE_READWRITE);
+}
+
+sub mk_ro_class_accessor {
+    my($class, $attr, $value) = @_;
+    return $class->_mk_accessor($attr, $value,
+                                _ATTR_TYPE_CLASS, _ACCESS_TYPE_READONLY);
+}
+
+sub mk_ro_translucent_accessor{
+    my($class, $attr, $value) = @_;
+    return $class->_mk_accessor($attr, $value,
+                                _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READONLY);
+}
+
+sub mk_ro_object_accessor {
+    my($class, $attr, $value) = @_;
+    return $class->_mk_accessor($attr, $value,
+                                _ATTR_TYPE_OBJECT, _ACCESS_TYPE_READONLY);
+}
+
+*mk_translucent = \&mk_translucent_accessor;
+
 sub _mk_accessor {
-    my($declaredclass, $attribute, $value, $type, $access) = @_;
+    my($declaredclass, $attr, $value, $type, $access) = @_;
 
     if (ref $declaredclass) {
         my $caller = (caller(1))[3];
@@ -130,19 +116,19 @@ sub _mk_accessor {
         if ($readonlyattr and @_ > 1) {
             my $caller = (caller(0))[3];
             $caller =~ s/^.*:://o;
-            croak("$attribute is a read-only attribute");
+            croak("'$attr' is a read-only attribute");
         }
 
         my $usingobject = (($translucentattr && $object) || $objectattr);
         my $class = ref $_[0] || $_[0];
 
-        return $class->_mk_accessor($attribute, $value, $type, $access)->(@_)
+        return $class->_mk_accessor($attr, $value, $type, $access)->(@_)
           if @_ > 1 && !$usingobject && $class ne $declaredclass;
 
         if ($usingobject) {
             my $attrs = $object->attrs();
-            $attrs->{$attribute} = $_[1] if @_ > 1;
-            return $attrs->{$attribute} if exists $attrs->{$attribute};
+            $attrs->{$attr} = $_[1] if @_ > 1;
+            return $attrs->{$attr} if exists $attrs->{$attr};
         }
         else {
             $value = $_[1] if @_ > 1;
@@ -151,7 +137,7 @@ sub _mk_accessor {
         return $value;
     };
 
-    my $name = "${declaredclass}::$attribute";
+    my $name = "${declaredclass}::$attr";
     my $subnamed = 0;
     unless (defined &{$name}) {
         subname($name, $accessor) if defined &subname;
@@ -160,7 +146,7 @@ sub _mk_accessor {
         *{$name}  = $accessor;
     }
 
-    my $alias = "${declaredclass}::_${attribute}_accessor";
+    my $alias = "${declaredclass}::_${attr}_accessor";
     unless (defined &{$alias}) {
         subname($alias, $accessor) if defined &subname and not $subnamed;
         no strict 'refs'; ## no critic (TestingAndDebugging::ProhibitNoStrict)
@@ -168,6 +154,14 @@ sub _mk_accessor {
     }
 
     return $accessor;
+}
+
+#-------------------------------------------------------------------------------
+# Object methods
+#-------------------------------------------------------------------------------
+
+sub attrs {
+    return $_[0];
 }
 
 1;
@@ -311,7 +305,7 @@ as follows (a la L<perldiag>):
 
 (F) TODO
 
-=item %s is a read-only attribute
+=item '%s' is a read-only attribute
 
 (F) TODO
 
