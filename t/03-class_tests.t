@@ -55,8 +55,8 @@ is $obj->DataFile, "/tmp/stuff", "But objects can access the data";
 is(Gun->ro, "readonly", "readonly attribute Ok thru class");
 is($obj->ro, "readonly", "readonly attribute Ok thru object");
 eval { Gun->ro(2) };
-ok $@ =~ /^ro is a read-only attribute/,
+ok $@ =~ /^'ro' is a read-only attribute/,
    "readonly attribute can't be written thru class";
 eval { $obj->ro(2) };
-ok $@ =~ /^ro is a read-only attribute/,
+ok $@ =~ /^'ro' is a read-only attribute/,
    "readonly attribute can't be written thru object";

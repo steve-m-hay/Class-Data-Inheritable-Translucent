@@ -63,8 +63,8 @@ is(Foo->_attr_accessor, "3", "Existing alias is not ovewrwritten");
 is(Foo->ro, "readonly", "readonly attribute Ok thru class");
 is($obj->ro, "readonly", "readonly attribute Ok thru object");
 eval { Foo->ro(2) };
-ok $@ =~ /^ro is a read-only attribute/,
+ok $@ =~ /^'ro' is a read-only attribute/,
    "readonly attribute can't be written thru class";
 eval { $obj->ro(2) };
-ok $@ =~ /^ro is a read-only attribute/,
+ok $@ =~ /^'ro' is a read-only attribute/,
    "readonly attribute can't be written thru object";

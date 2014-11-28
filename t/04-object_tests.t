@@ -28,5 +28,5 @@ is($obj->baz, "object", "reset Ok");
 
 is($obj->ro, "readonly", "readonly attribute Ok");
 eval { $obj->ro(2) };
-ok $@ =~ /^ro is a read-only attribute/,
+ok $@ =~ /^'ro' is a read-only attribute/,
    "readonly attribute can't be written";

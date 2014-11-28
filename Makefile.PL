@@ -99,10 +99,11 @@ MAIN: {
         },
 
         PREREQ_PM => {
-            'Carp'     => '0',
-            'constant' => '0',
-            'strict'   => '0',
-            'warnings' => '0'
+            'Carp'       => '0',
+            'Class::ISA' => '0',
+            'constant'   => '0',
+            'strict'     => '0',
+            'warnings'   => '0'
         },
 
         dist => {

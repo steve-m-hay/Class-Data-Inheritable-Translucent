@@ -2,6 +2,13 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
 2.00 Development
 
+    - Added Class::Data::Inheritable::Translucent::Object, an abstract base
+      class extending Class::Data::Inheritable::Translucent with a
+      constructor/clone method with separated initialization.  Users of the main
+      module will always need a constuctor for their objects and may not already
+      have one so it is convenient for this distribution to provide a class that
+      fulfils this common need.
+
     - Fixed broken link for active bugs on the CPAN Request Tracker.
 
     - Added mk_object_accessor(), which creates a non-translucent object

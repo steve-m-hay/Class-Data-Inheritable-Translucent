@@ -25,7 +25,11 @@ use 5.008001;
 use strict;
 use warnings;
 
+# See CPAN RT#82921 / Perl-Critic Issue 499.
+## no critic (Modules::ProhibitEvilModules)
+
 use Carp qw(croak);
+use Class::ISA qw();
 BEGIN { eval { require Sub::Name; 1 } and Sub::Name->import(qw(subname)) }
 
 use constant _ATTR_TYPE_CLASS       => 1;
@@ -100,6 +104,8 @@ sub _mk_accessor {
         croak("$caller() is a class method, not an object method");
     }
 
+    $declaredclass->_add_attr($attr, $type, $access);
+
     my $translucentattr = ($type == _ATTR_TYPE_TRANSLUCENT);
     my $objectattr      = ($type == _ATTR_TYPE_OBJECT);
     my $readonlyattr    = ($access == _ACCESS_TYPE_READONLY);
@@ -108,15 +114,21 @@ sub _mk_accessor {
         my $object = ref $_[0] ? $_[0] : undef;
 
         if ($objectattr and not $object) {
-            my $caller = (caller(0))[3];
-            $caller =~ s/^.*:://o;
-            croak("$caller() is an object method, not a class method");
+            croak("$attr() is an object method, not a class method");
         }
 
         if ($readonlyattr and @_ > 1) {
-            my $caller = (caller(0))[3];
-            $caller =~ s/^.*:://o;
-            croak("'$attr' is a read-only attribute");
+            my $caller = (caller(1))[3];
+            my($callerpackage, $callerfunction);
+            if ($caller =~ /^(.*)::(.*?)$/o) {
+                ($callerpackage, $callerfunction) = ($1, $2);
+            }
+            if (not defined $callerpackage or not defined $callerfunction or
+                not ($callerpackage->isa(__PACKAGE__) and
+                     ($callerfunction =~ /^(?:initialize|copy)$/)))
+            {
+                croak("'$attr' is a read-only attribute");
+            }
         }
 
         my $usingobject = (($translucentattr && $object) || $objectattr);
@@ -162,6 +174,72 @@ sub _mk_accessor {
 
 sub attrs {
     return $_[0];
+}
+
+{
+
+my %_Attrs = ();
+
+#-------------------------------------------------------------------------------
+# Class methods
+#-------------------------------------------------------------------------------
+
+#
+# Adds an attribute of the given type and access type to the invocent class,
+# checking that there is no conflicting attribute first.
+# Returns true or else throws an exception.
+#
+sub _add_attr {
+    my($class, $attr, $type, $access) = @_;
+
+    if (exists $_Attrs{$class} and exists $_Attrs{$class}{$attr}) {
+        croak("Duplicate attribute '$attr' in class '$class'");
+    }
+
+    foreach my $super_class (Class::ISA::super_path($class)) {
+        if (exists $_Attrs{$super_class} and
+                exists $_Attrs{$super_class}{$attr} and
+                ($_Attrs{$super_class}{$attr}{type} != $type or
+                 $_Attrs{$super_class}{$attr}{access} != $access))
+        {
+            croak("Conflicting attribute '$attr' in superclass '$super_class'");
+        }
+    }
+
+    $_Attrs{$class}{$attr} = {
+        type   => $type,
+        access => $access
+    };
+
+    return 1;
+}
+
+#-------------------------------------------------------------------------------
+# Object methods
+#-------------------------------------------------------------------------------
+
+#
+# Returns a list of the object attributes and translucent attributes (since they
+# double as object attributes) of the invocant object. Includes any attributes
+# inherited from superclasses.
+#
+sub _get_attrs {
+    my $self = shift;
+    my $class = ref $self;
+
+    my %attrs = ();
+    foreach my $super_class (Class::ISA::self_and_super_path($class)) {
+        next unless exists $_Attrs{$super_class};
+        foreach my $attr (keys %{$_Attrs{$super_class}}) {
+            if ($_Attrs{$super_class}{$attr}{type} != _ATTR_TYPE_CLASS) {
+                $attrs{$attr} = 1;
+            }
+        }
+    }
+
+    return keys %attrs;
+}
+
 }
 
 1;
@@ -231,51 +309,73 @@ can also be created with mk_object_accessor().  Read-only accessors for all
 three types of data/attributes can also be created with mk_ro_class_accessor(),
 mk_ro_translucent_accessor() and mk_ro_object_accessor().
 
-The value of object attribute $attribute, by default, is stored in
-$object->{$attribute}.  See the attrs() method on how to change that.
+Your class should inherit from Class::Data::Inheritable::Translucent and call
+the relevant mk_*_accessor() methods during its initialization.  If you are
+making use of object accessor methods (translucent or otherwise) then your class
+will also need to have a constructor method to create objects.  By default, the
+objects are assumed to be hash references with their attributes stored directly
+inside them, i.e. the value of object $obj's attribute $attr is assumed to be
+stored in $obj->{$attr}.  See the attrs() method on how to change that.  If a
+simple hash-based object is all you need then you can have a constructor method
+provided for you by inheriting from
+L<Class::Data::Inheritable::Translucent::Object> instead.
 
-=head2 Methods
+=head2 Class Methods
 
 =over 4
 
-=item B<mk_class_accessor>
+=item C<mk_class_accessor($attribute, $default)>
 
-Creates an accessor for inheritable, overridable class data.  Does not install
-the accessor method if a subroutine of the same name already exists; likewise
-for the alias method (_E<lt>attributeE<gt>_accessor()).
+Static method to create an accessor for an inheritable, overridable class
+attribute called $attribute with default value $default in the invocant class.
+Does not install the accessor method if a subroutine of the same name already
+exists; likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 
-=item B<mk_translucent_accessor>
+=item C<mk_translucent_accessor($attribute, $default)>
 
-Creates an accessor for inheritable, overridable class data which doubles as a
+Static method to create an accessor for an inheritable, overridable class
+attribute called $attribute with default value $default which doubles as a
 translucent object attribute accessor.  Does not install the accessor method if
 a subroutine of the same name already exists; likewise for the alias method
 (_E<lt>attributeE<gt>_accessor()).
 
-=item B<mk_translucent>
+=item C<mk_translucent($attribute, $default)>
 
 Alias for mk_translucent_accessor(), for backwards compatibility.
 
-=item B<mk_object_accessor>
+=item C<mk_object_accessor($attribute, $default)>
 
-Creates a non-translucent object attribute accessor.  Does not
-install the accessor method if a subroutine of the same name already exists;
-likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
+Static method to create an accessor for a non-translucent object attribute
+called $attribute with default value $default.  Does not install the accessor
+method if a subroutine of the same name already exists; likewise for the alias
+method (_E<lt>attributeE<gt>_accessor()).
 
-=item B<mk_ro_class_accessor>
+=item C<mk_ro_class_accessor($attribute, $default)>
 
-Same as C<mk_class_accessor> except that the data is read-only.
+Same as C<mk_class_accessor> except that the attribute is read-only.  As with
+readonly static fields in C#, the value can only be set during class
+initialization, i.e. in the mk_ro_class_accessor() call itself.
 
-=item B<mk_ro_translucent_accessor>
+=item C<mk_ro_translucent_accessor($attribute, $default)>
 
-Same as C<mk_translucent_accessor> except that the data/attribute is read-only.
-Objects can be initialized with a non-default value for the attribute, but the
-value cannot subsequently be changed via the accessor method.
+Same as C<mk_translucent_accessor> except that the attribute is read-only.  As
+with readonly static fields in C#, the class attribute value, which here doubles
+as the translucent object attribute default value, can only be set during class
+initialization, i.e. in the mk_ro_class_accessor() call itself, and as with
+other readonly fields in C#, the object attribute value can only be set when
+constructing the object (including cloning or copying the object).
 
-=item B<mk_ro_object_accessor>
+=item C<mk_ro_object_accessor($attribute, $default)>
 
-Same as C<mk_object_accessor> except that the attribute is read-only.  Objects
-can be initialized with a non-default value for the attribute, but the value
-cannot subsequently be changed via the accessor method.
+Same as C<mk_object_accessor> except that the attribute is read-only.  As with
+readonly fields in C#, the value can only be set when constructing the object
+(including cloning or copying the object).
+
+=back
+
+=head2 Object Methods
+
+=over 4
 
 =item B<attrs>
 
@@ -301,17 +401,33 @@ as follows (a la L<perldiag>):
 
 =over 4
 
+=item Conflicting attribute '%s' in superclass '%s'
+
+(F) You tried to install the specified attribute into a class that already
+inherits an attribute of the same name but of a conflicting attribute type
+(class, translucent or object) or access type (read/write or read-only) from the
+specified superclass.  You cannot override an attribute unless it is of the same
+type.
+
+=item Duplicate attribute '%s' in class '%s'
+
+(F) You tried to install the specified attribute into the specified class, but
+that class that already has an attribute of the same name.
+
 =item %s() is a class method, not an object method
 
-(F) TODO
+(F) You tried to invoke the specified method on an object, but it can only be
+invoked on a class name.
 
 =item '%s' is a read-only attribute
 
-(F) TODO
+(F) You tried to set the value of the specified attribute, but it is a read-only
+attribute.
 
 =item %s() is an object method, not a class method
 
-(F) TODO
+(F) You tried to invoke the specified method on a class name, but it can only be
+invoked on an object.
 
 =back
 

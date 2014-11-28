@@ -46,6 +46,43 @@ SYNOPSIS
       print $obj->oattr; # prints "bar"
       print Foo->tattr;  # prints "qux"
 
+      package Bar;
+      use parent qw(Class::Data::Inheritable::Translucent::Object);
+
+      Bar->mk_object_accessor(attr => 0);
+
+      # Class constructor
+      my $obj1 = Bar->new();
+      my $obj2 = Bar->new(attr => 1);
+      my $obj3 = Bar->new($obj2);
+      my $obj4 = Bar->new($obj2, attr => 2);
+
+      # Object clone
+      my $obj5 = $obj2->clone();
+      my $obj6 = $obj2->clone(attr => 3);
+
+      # Object copy
+      my $obj7 = $obj2->copy();
+
+      # Object reset
+      $obj7->reset();
+
+      package Baz;
+      use parent qw(Bar);
+
+      my $_Count = 0;
+
+      # Separated, overridable, object initialization
+      sub initialize {
+          my($self, %args) = @_;
+          $_Count++;
+          return $self->SUPER::initialize($%args);
+      }
+
+      sub DESTROY {
+          $_Count--;
+      }
+
 DESCRIPTION
     This module is based on Class::Data::Inheritable; the
     mk_class_accessor() method is largely the same as
@@ -57,8 +94,28 @@ DESCRIPTION
     with mk_ro_class_accessor(), mk_ro_translucent_accessor() and
     mk_ro_object_accessor().
 
-    The value of object attribute $attribute, by default, is stored in
-    $object->{$attribute}. See the attrs() method on how to change that.
+    Your class should inherit from Class::Data::Inheritable::Translucent and
+    call the relevant mk_*_accessor() methods during its initialization. If
+    you are making use of object accessor methods (translucent or otherwise)
+    then your class will also need to have a constructor method to create
+    objects. By default, the objects are assumed to be hash references with
+    their attributes stored directly inside them, i.e. the value of object
+    $obj's attribute $attr is assumed to be stored in $obj->{$attr}. See the
+    attrs() method on how to change that. If a simple hash-based object is
+    all you need then you can have a constructor method provided for you by
+    inheriting from Class::Data::Inheritable::Translucent::Object instead.
+
+    Class::Data::Inheritable::Translucent::Object is an abstract base class
+    extending Class::Data::Inheritable::Translucent with a constructor/clone
+    method with separated initialization. The objects constructed are simple
+    hash-based objects compatible with the accessor methods installed by
+    Class::Data::Inheritable::Translucent.
+
+    Attributes may be initialized by the constructor, either explicitly or
+    by cloning another object, or by a separate initialize() method. A
+    copy() method is also provided to copy the attributes of one object to
+    another, and a reset() method can be used to restore an object's default
+    attribute values.
 
 COMPATIBILITY
     Before version 2.00 of this module, an object attribute that had been
