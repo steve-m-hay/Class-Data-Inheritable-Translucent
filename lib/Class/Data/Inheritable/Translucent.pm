@@ -104,6 +104,11 @@ sub _mk_accessor {
         croak("$caller() is a class method, not an object method");
     }
 
+    if ($attr eq 'DESTROY') {
+        carp("Having an accessor named 'DESTROY' in '$declaredclass' is " .
+             "unwise.");
+    }
+
     $declaredclass->_add_attr($attr, $type, $access);
 
     my $translucentattr = ($type == _ATTR_TYPE_TRANSLUCENT);
@@ -131,19 +136,16 @@ sub _mk_accessor {
             }
         }
 
-        my $usingobject = (($translucentattr && $object) || $objectattr);
-        my $class = ref $_[0] || $_[0];
-
-        return $class->_mk_accessor($attr, $value, $type, $access)->(@_)
-          if @_ > 1 && !$usingobject && $class ne $declaredclass;
-
-        if ($usingobject) {
+        if (($translucentattr && $object) || $objectattr) {
             my $attrs = $object->attrs();
-            $attrs->{$attr} = $_[1] if @_ > 1;
+            return $attrs->{$attr} = $_[1] if @_ > 1;
             return $attrs->{$attr} if exists $attrs->{$attr};
         }
-        else {
-            $value = $_[1] if @_ > 1;
+        elsif (@_ > 1) {
+            my $class = ref $_[0] || $_[0];
+            return $class->_mk_accessor($attr, $value, $type, $access)->(@_)
+                if $class ne $declaredclass;
+            return $value = $_[1];
         }
 
         return $value;
@@ -413,6 +415,11 @@ type.
 
 (F) You tried to install the specified attribute into the specified class, but
 that class that already has an attribute of the same name.
+
+=item Having an accessor named 'DESTROY' in '%s' is unwise.
+
+(W) You tried to install an attribute named 'DESTROY' into the specified class.
+This is not a wise thing to do.
 
 =item %s() is a class method, not an object method
 
