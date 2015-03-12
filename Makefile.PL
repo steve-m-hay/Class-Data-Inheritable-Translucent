@@ -59,6 +59,17 @@ MAIN: {
                     }
                 },
 
+                changestest => {
+                    description => 'Changes testing',
+                    prereqs => {
+                        test => {
+                            requires => {
+                                'Test::CPAN::Changes' => '0'
+                            }
+                        }
+                    }
+                },
+
                 critictest => {
                     description => 'Perl::Critic testing',
                     prereqs => {
@@ -77,6 +88,17 @@ MAIN: {
                             requires => {
                                 'Test::Pod'           => '1.14',
                                 'Test::Pod::Coverage' => '1.04'
+                            }
+                        }
+                    }
+                },
+
+                podcoveragetest => {
+                    description => 'POD coverage testing',
+                    prereqs => {
+                        test => {
+                            requires => {
+                                'Test::Pod::Coverage' => '0.08'
                             }
                         }
                     }
