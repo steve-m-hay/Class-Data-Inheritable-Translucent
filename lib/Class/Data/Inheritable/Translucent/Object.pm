@@ -48,6 +48,7 @@ BEGIN {
 
 sub new {
     my($class, @args) = @_;
+    croak("new() is a class method, not an object method") if ref $class;
     croak("'$class' is an abstract base class") if $class eq __PACKAGE__;
 
     my $self = bless {}, $class;
@@ -280,6 +281,11 @@ object you are trying to copy values to.
 (W) You passed some attributes to initialize() (perhaps via new() or clone())
 that are not object attributes or translucent attributes of the class (or of any
 superclasses) to which the object being initialized (or constructed) belongs.
+
+=item %s() is a class method, not an object method
+
+(F) You tried to invoke the specified method on an object, but it can only be
+invoked on a class name.
 
 =item '%s' is an abstract base class
 
