@@ -30,7 +30,7 @@ use warnings;
 # See CPAN RT#82921 / Perl-Critic Issue 499.
 ## no critic (Modules::ProhibitEvilModules)
 
-use Carp qw(croak);
+use Carp qw(carp croak);
 use Class::ISA qw();
 BEGIN { eval { require Sub::Name } and Sub::Name->import(qw(subname)) }
 
