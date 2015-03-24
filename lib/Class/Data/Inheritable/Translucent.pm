@@ -32,7 +32,7 @@ use warnings;
 
 use Carp qw(croak);
 use Class::ISA qw();
-BEGIN { eval { require Sub::Name; 1 } and Sub::Name->import(qw(subname)) }
+BEGIN { eval { require Sub::Name } and Sub::Name->import(qw(subname)) }
 
 use constant _ATTR_TYPE_CLASS       => 1;
 use constant _ATTR_TYPE_TRANSLUCENT => 2;
