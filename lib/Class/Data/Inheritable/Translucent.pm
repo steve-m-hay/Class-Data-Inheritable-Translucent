@@ -201,11 +201,11 @@ sub _add_attr {
     }
 
     foreach my $super_class (Class::ISA::super_path($class)) {
-        if (exists $_Attrs{$super_class} and
-                exists $_Attrs{$super_class}{$attr} and
-                ($_Attrs{$super_class}{$attr}{type} != $type or
-                 $_Attrs{$super_class}{$attr}{access} != $access))
-        {
+        next unless (exists $_Attrs{$super_class} and
+                     exists $_Attrs{$super_class}{$attr});
+
+        my $data = $_Attrs{$super_class}{$attr};
+        if ($data->{type} != $type or $data->{access} != $access) {
             croak("Conflicting attribute '$attr' in superclass '$super_class'");
         }
     }
