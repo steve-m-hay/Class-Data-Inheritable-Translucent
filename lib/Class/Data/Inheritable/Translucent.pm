@@ -65,7 +65,7 @@ sub mk_class_accessor {
                                 _ATTR_TYPE_CLASS, _ACCESS_TYPE_READWRITE);
 }
 
-sub mk_translucent_accessor{
+sub mk_translucent_accessor {
     my($class, $attr, $value) = @_;
     return $class->_mk_accessor($attr, $value,
                                 _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READWRITE);
@@ -83,7 +83,7 @@ sub mk_ro_class_accessor {
                                 _ATTR_TYPE_CLASS, _ACCESS_TYPE_READONLY);
 }
 
-sub mk_ro_translucent_accessor{
+sub mk_ro_translucent_accessor {
     my($class, $attr, $value) = @_;
     return $class->_mk_accessor($attr, $value,
                                 _ATTR_TYPE_TRANSLUCENT, _ACCESS_TYPE_READONLY);
