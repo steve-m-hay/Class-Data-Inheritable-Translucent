@@ -3,8 +3,8 @@
 # lib/Class/Data/Inheritable/Translucent/Object.pm
 #
 # DESCRIPTION
-#   Abstract base class extending Class::Data::Inheritable::Translucent with a
-#   constructor/clone method with separated initialization.
+#   Abstract base class extending Class::Data::Inheritable::Translucent with
+#   constructor/clone methods with separated initialization.
 #
 # COPYRIGHT
 #   Copyright (C) 2014 Steve Hay.  All rights reserved.
@@ -147,7 +147,7 @@ __END__
 
 =head1 NAME
 
-Class::Data::Inheritable::Translucent::Object - Add a constructor/clone method to Class::Data::Inheritable::Translucent
+Class::Data::Inheritable::Translucent::Object - Add constructor/clone methods to Class::Data::Inheritable::Translucent
 
 =head1 SYNOPSIS
 
@@ -172,7 +172,7 @@ Class::Data::Inheritable::Translucent::Object - Add a constructor/clone method t
   # Object reset
   $obj7->reset();
 
-  package Baz;
+  package Bar2;
   use parent qw(Bar);
 
   my $_Count = 0;
@@ -181,7 +181,7 @@ Class::Data::Inheritable::Translucent::Object - Add a constructor/clone method t
   sub initialize {
       my($self, %args) = @_;
       $_Count++;
-      return $self->SUPER::initialize($%args);
+      return $self->SUPER::initialize(%args);
   }
 
   sub DESTROY {
@@ -191,15 +191,20 @@ Class::Data::Inheritable::Translucent::Object - Add a constructor/clone method t
 =head1 DESCRIPTION
 
 This module is an abstract base class extending
-L<Class::Data::Inheritable::Translucent> with a constructor/clone method with
+L<Class::Data::Inheritable::Translucent> with constructor/clone methods with
 separated initialization.  The objects constructed are simple hash-based objects
 compatible with the accessor methods installed by
 Class::Data::Inheritable::Translucent.
 
-Attributes may be initialized by the constructor, either explicitly or by
-copying another object, or by a separate initialize() method.  A copy() method
-is also provided to copy the attributes of one object to another, and a reset()
-method can be used to restore an object's default attribute values.
+Attributes may be initialized by the constructor, either explicitly, or by
+copying another object, or via a separated initialize() method which can be
+overridden in subclasses.  A copy() method is also provided to copy the
+attributes of one object to another, and a reset() method can be used to restore
+an object's attributes to their default values (translucent or otherwise).
+
+Note that all of these methods, just like the accessor methods created by
+L<Class::Data::Inheritable::Translucent>, only perform shallow copies of
+attribute values.
 
 =head2 Class Methods
 
@@ -207,8 +212,8 @@ method can be used to restore an object's default attribute values.
 
 =item C<new([ $obj ] [, %args ])>
 
-Constructs an instance of the invocant class.  The object will be a simple
-hash-based object compatible with the accessor methods installed by
+Constructs an instance of the invocant class and returns it.  The object will be
+a simple hash-based object compatible with the accessor methods installed by
 Class::Data::Inheritable::Translucent.
 
 The new object can optionally be initialized either by copying the attributes of
@@ -224,29 +229,38 @@ used to override the defaults and copied values.
 
 =item C<clone($obj [, %args ])>
 
-Clones the given object, constructing a new instance of the same class, with the
-same attribute values.
+Clones the given object, constructing a new instance of the same class with the
+same attribute values and returns it.
 
 The new object can optionally have its default and copied attribute values
 overridden by those in a named parameter list (hash) of attributes.
 
 This has the same effect as $class->new($obj, %args), where $class is the class
-to which $obj belongs.
+to which $obj belongs.  In other words, this behaves like a copy constructor in
+C++.
 
 =item C<copy($obj)>
 
 Sets the attributes of the invocant object to the same values as those of the
-given object, assuming that given object is an instance of the same class (or a
-subclass) as the invocant object (otherwise it throws an exception).
+given object, assuming that the given object is an instance of the same class
+(or a subclass) as the invocant object (otherwise it throws an exception), and
+returns 1.
 
-=item C<initialize(%args)>
+As noted earlier, but of particular relevance here, this only performs a shallow
+copy of the attributes.  Therefore, the two objects will end up sharing some
+data if any attribute values are references.
+
+=item C<initialize([ %args ])>
 
 Sets the attributes of the invocant object from the given named parameter list
-(hash).  If any given attributes are not object attributes or translucent
-attributes of the class (or of any superclass) to which the invocant object
-belongs then they are ignored and initialize() will issue a warnings about them.
+(hash) and returns 1.  If any given attributes are not object attributes or
+translucent attributes of the class (or of any superclass) to which the
+invocant object belongs then they are ignored and initialize() will issue a
+warning about them and return 0.
 
-This method is called by both new() and clone().
+This method is called when constructing or cloning an object.  Subclasses may
+override it to provide custom initialization, but it is not really intended to
+be called directly.
 
 =item C<reset()>
 
@@ -254,6 +268,15 @@ Resets an object's attributes to reveal their (translucent or otherwise) class
 default values by deleting all the attributes from the object and then calling
 initialize() with no arguments.  This has the effect of setting the object to
 the same state as a new object constructed with the default constructor.
+
+Resets an object's attributes to reveal their (translucent or otherwise) class
+default values by deleting all the attributes from the object and then calling
+initialize() with no arguments.
+
+This has the effect of setting the object to the same state as a new object
+constructed with a default constructor call (i.e. new() with no arguments).
+
+Returns 1.
 
 =back
 

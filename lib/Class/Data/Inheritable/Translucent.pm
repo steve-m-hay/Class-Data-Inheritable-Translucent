@@ -324,18 +324,22 @@ simple hash-based object is all you need then you can have a constructor method
 provided for you by inheriting from
 L<Class::Data::Inheritable::Translucent::Object> instead.
 
+Note that the accessor methods created by this module only perform shallow
+copies of attribute values.  Therefore, different classes and/or objects will
+end up sharing some data if any attribute values are set to references.
+
 =head2 Class Methods
 
 =over 4
 
-=item C<mk_class_accessor($attribute, $default)>
+=item C<mk_class_accessor($attribute [, $default ])>
 
 Static method to create an accessor for an inheritable, overridable class
 attribute called $attribute with default value $default in the invocant class.
 Does not install the accessor method if a subroutine of the same name already
 exists; likewise for the alias method (_E<lt>attributeE<gt>_accessor()).
 
-=item C<mk_translucent_accessor($attribute, $default)>
+=item C<mk_translucent_accessor($attribute [, $default ])>
 
 Static method to create an accessor for an inheritable, overridable class
 attribute called $attribute with default value $default which doubles as a
@@ -343,37 +347,37 @@ translucent object attribute accessor.  Does not install the accessor method if
 a subroutine of the same name already exists; likewise for the alias method
 (_E<lt>attributeE<gt>_accessor()).
 
-=item C<mk_translucent($attribute, $default)>
+=item C<mk_translucent($attribute [, $default ])>
 
 Alias for mk_translucent_accessor(), for backwards compatibility.
 
-=item C<mk_object_accessor($attribute, $default)>
+=item C<mk_object_accessor($attribute [, $default ])>
 
 Static method to create an accessor for a non-translucent object attribute
 called $attribute with default value $default.  Does not install the accessor
 method if a subroutine of the same name already exists; likewise for the alias
 method (_E<lt>attributeE<gt>_accessor()).
 
-=item C<mk_ro_class_accessor($attribute, $default)>
+=item C<mk_ro_class_accessor($attribute [, $default ])>
 
 Same as C<mk_class_accessor> except that the attribute is read-only.  As with
 readonly static fields in C#, the value can only be set during class
 initialization, i.e. in the mk_ro_class_accessor() call itself.
 
-=item C<mk_ro_translucent_accessor($attribute, $default)>
+=item C<mk_ro_translucent_accessor($attribute [, $default ])>
 
 Same as C<mk_translucent_accessor> except that the attribute is read-only.  As
 with readonly static fields in C#, the class attribute value, which here doubles
 as the translucent object attribute default value, can only be set during class
 initialization, i.e. in the mk_ro_class_accessor() call itself, and as with
 other readonly fields in C#, the object attribute value can only be set when
-constructing the object (including cloning or copying the object).
+constructing/cloning the object.
 
-=item C<mk_ro_object_accessor($attribute, $default)>
+=item C<mk_ro_object_accessor($attribute [, $default ])>
 
 Same as C<mk_object_accessor> except that the attribute is read-only.  As with
-readonly fields in C#, the value can only be set when constructing the object
-(including cloning or copying the object).
+readonly fields in C#, the value can only be set when constructing/cloning the
+object.
 
 =back
 
@@ -381,7 +385,7 @@ readonly fields in C#, the value can only be set when constructing the object
 
 =over 4
 
-=item B<attrs>
+=item C<attrs()>
 
 This method is called by the generated accessors and, by default, simply
 returns the object that called it, which should be a hash reference for storing
