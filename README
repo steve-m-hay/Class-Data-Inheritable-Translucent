@@ -67,7 +67,7 @@ SYNOPSIS
       # Object reset
       $obj7->reset();
 
-      package Baz;
+      package Bar2;
       use parent qw(Bar);
 
       my $_Count = 0;
@@ -76,7 +76,7 @@ SYNOPSIS
       sub initialize {
           my($self, %args) = @_;
           $_Count++;
-          return $self->SUPER::initialize($%args);
+          return $self->SUPER::initialize(%args);
       }
 
       sub DESTROY {
@@ -106,16 +106,21 @@ DESCRIPTION
     inheriting from Class::Data::Inheritable::Translucent::Object instead.
 
     Class::Data::Inheritable::Translucent::Object is an abstract base class
-    extending Class::Data::Inheritable::Translucent with a constructor/clone
-    method with separated initialization. The objects constructed are simple
-    hash-based objects compatible with the accessor methods installed by
-    Class::Data::Inheritable::Translucent.
+    extending Class::Data::Inheritable::Translucent with constructor/clone
+    methods with separated initialization. The objects constructed are
+    simple hash-based objects compatible with the accessor methods installed
+    by Class::Data::Inheritable::Translucent.
 
-    Attributes may be initialized by the constructor, either explicitly or
-    by cloning another object, or by a separate initialize() method. A
-    copy() method is also provided to copy the attributes of one object to
-    another, and a reset() method can be used to restore an object's default
-    attribute values.
+    Attributes may be initialized by the constructor, either explicitly, or
+    by copying another object, or via a separated initialize() method which
+    can be overridden in subclasses. A copy() method is also provided to
+    copy the attributes of one object to another, and a reset() method can
+    be used to restore an object's attributes to their default values
+    (translucent or otherwise).
+
+    Note that all of these methods only perform shallow copies of attribute
+    values. Therefore, different classes and/or objects will end up sharing
+    some data if any attribute values are set to references.
 
 COMPATIBILITY
     Before version 2.00 of this module, an object attribute that had been
