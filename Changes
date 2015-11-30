@@ -2,6 +2,12 @@ Revision history for Perl distribution Class-Data-Inheritable-Translucent
 
 2.00 Development
 
+    - Added Class::Data::Inheritable::Translucent::Singleton, an abstract base
+      class extending Class::Data::Inheritable::Translucent with a singleton
+      constructor method with separated initialization. This is a variation of
+      Class::Data::Inheritable::Translucent::Object implementing the singleton
+      design pattern.
+
     - Added Class::Data::Inheritable::Translucent::Object, an abstract base
       class extending Class::Data::Inheritable::Translucent with a
       constructor/clone method with separated initialization.  Users of the main

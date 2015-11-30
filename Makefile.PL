@@ -7,7 +7,7 @@
 #   Makefile creation script.
 #
 # COPYRIGHT
-#   Copyright (C) 2014 Steve Hay.  All rights reserved.
+#   Copyright (C) 2014-2015 Steve Hay.  All rights reserved.
 #
 # LICENCE
 #   This script is free software; you can redistribute it and/or modify it under
@@ -50,6 +50,18 @@ MAIN: {
             },
 
             optional_features => {
+                singleton => {
+                    description => 'Class::Data::Inheritable::Translucent::Singleton',
+                    prereqs => {
+                        runtime => {
+                            requires => {
+                                'Apache::Singleton' => '0'
+                            # or Class::Singleton
+                            }
+                        }
+                    }
+                },
+
                 subname => {
                     description => 'Naming subroutines in caller() messages etc.',
                     prereqs => {

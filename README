@@ -83,6 +83,34 @@ SYNOPSIS
           $_Count--;
       }
 
+      package Baz;
+      use parent qw(Class::Data::Inheritable::Translucent::Singleton);
+
+      Baz->mk_object_accessor(attr => 0);
+
+      # Class constructor
+      my $obj1 = Baz->instance(attr => 1);
+      my $obj2 = Baz->instance(attr => 2); # same object as $obj1
+
+      # Object reset
+      $obj1->reset(); # $obj1 and $obj2 now both have attr == 0
+
+      package Baz2;
+      use parent qw(Baz);
+
+      my $_Count = 0;
+
+      # Separated, overridable, object initialization
+      sub initialize {
+          my($self, %args) = @_;
+          $_Count++;
+          return $self->SUPER::initialize(%args);
+      }
+
+      sub DESTROY {
+          $_Count--;
+      }
+
 DESCRIPTION
     This module is based on Class::Data::Inheritable; the
     mk_class_accessor() method is largely the same as
@@ -103,7 +131,8 @@ DESCRIPTION
     $obj's attribute $attr is assumed to be stored in $obj->{$attr}. See the
     attrs() method on how to change that. If a simple hash-based object is
     all you need then you can have a constructor method provided for you by
-    inheriting from Class::Data::Inheritable::Translucent::Object instead.
+    inheriting from Class::Data::Inheritable::Translucent::Object or
+    Class::Data::Inheritable::Translucent::Singleton instead.
 
     Class::Data::Inheritable::Translucent::Object is an abstract base class
     extending Class::Data::Inheritable::Translucent with constructor/clone
@@ -115,7 +144,25 @@ DESCRIPTION
     by copying another object, or via a separated initialize() method which
     can be overridden in subclasses. A copy() method is also provided to
     copy the attributes of one object to another, and a reset() method can
-    be used to restore an object's attributes to their default values
+    be used to restore an object's non-read-only attributes to their default
+    values (translucent or otherwise).
+
+    Class::Data::Inheritable::Translucent::Singleton is an abstract base
+    class extending Class::Data::Inheritable::Translucent with a singleton
+    constructor method with separated initialization. The objects
+    constructed are simple hash-based objects compatible with the accessor
+    methods installed by Class::Data::Inheritable::Translucent.
+
+    The singleton design pattern behaviour is inherited from either
+    Apache::Singleton or Class::Singleton, whichever is found first (looking
+    in that order); an exception will be thrown if neither is available.
+    Apache::Singleton is more flexible since it allows one instance per
+    request when run in a mod_perl environment (but still permits only one
+    instance per process otherwise).
+
+    Attributes may be initialized by the constructor, either explicitly, or
+    via a separated initialize() method. A reset() method can be used to
+    restore the object's non-read-only attributes to their default values
     (translucent or otherwise).
 
     Note that all of these methods only perform shallow copies of attribute
@@ -142,8 +189,8 @@ INSTALLATION
 COPYRIGHT
     Version 0.01 Copyright (C) 2005 Ryan McGuigan. All rights reserved.
 
-    Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve
-    Hay. All rights reserved.
+    Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014-2015
+    Steve Hay. All rights reserved.
 
 LICENCE
     This distribution is free software; you can redistribute it and/or

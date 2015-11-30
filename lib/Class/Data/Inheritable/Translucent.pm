@@ -9,8 +9,8 @@
 #
 # COPYRIGHT
 #   Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
-#   Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.
-#   All rights reserved.
+#   Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014-2015 Steve
+#   Hay.  All rights reserved.
 #
 # LICENCE
 #   This module is free software; you can redistribute it and/or modify it under
@@ -124,16 +124,10 @@ sub _mk_accessor {
             croak("$attr() is an object method, not a class method");
         }
 
+        # Disallow setting a read-only attribute except when working on an
+        # object that is not yet initialized.
         if ($readonlyattr and @_ > 1) {
-            my $caller = (caller(1))[3];
-            my($callerpackage, $callerfunction);
-            if ($caller =~ /^(.*)::(.*?)$/o) {
-                ($callerpackage, $callerfunction) = ($1, $2);
-            }
-            if (not defined $callerpackage or not defined $callerfunction or
-                not ($callerpackage->isa(__PACKAGE__) and
-                     ($callerfunction =~ /^(?:initialize|copy)$/)))
-            {
+            if (not $object or $object->_initialized()) {
                 croak("'$attr' is a read-only attribute");
             }
         }
@@ -176,8 +170,18 @@ sub _mk_accessor {
 # Object methods
 #-------------------------------------------------------------------------------
 
+#
+# Overridable.
+#
 sub attrs {
     return $_[0];
+}
+
+#
+# Overridable.
+#
+sub _initialized {
+    return 1;
 }
 
 {
@@ -225,17 +229,24 @@ sub _add_attr {
 #
 # Returns a list of the object attributes and translucent attributes (since they
 # double as object attributes) of the invocant object. Includes any attributes
-# inherited from superclasses.
+# inherited from superclasses. If the object is in an initialized state then
+# read-only attributes are not included.
 #
-sub _get_attrs {
-    my $self = shift;
+sub _get_editable_attrs {
+    my($self, $all) = @_;
     my $class = ref $self;
+
+    my $initialized = $self->_initialized();
 
     my %attrs = ();
     foreach my $super_class (Class::ISA::self_and_super_path($class)) {
         next unless exists $_Attrs{$super_class};
+
         foreach my $attr (keys %{$_Attrs{$super_class}}) {
-            if ($_Attrs{$super_class}{$attr}{type} != _ATTR_TYPE_CLASS) {
+            my $data = $_Attrs{$super_class}{$attr};
+            next if $data->{type} == _ATTR_TYPE_CLASS;
+
+            if (!$initialized or $data->{access} != _ACCESS_TYPE_READONLY) {
                 $attrs{$attr} = 1;
             }
         }
@@ -322,7 +333,8 @@ inside them, i.e. the value of object $obj's attribute $attr is assumed to be
 stored in $obj->{$attr}.  See the attrs() method on how to change that.  If a
 simple hash-based object is all you need then you can have a constructor method
 provided for you by inheriting from
-L<Class::Data::Inheritable::Translucent::Object> instead.
+L<Class::Data::Inheritable::Translucent::Object> or
+L<Class::Data::Inheritable::Translucent::Singleton> instead.
 
 Note that the accessor methods created by this module only perform shallow
 copies of attribute values.  Therefore, different classes and/or objects will
@@ -361,22 +373,22 @@ method (_E<lt>attributeE<gt>_accessor()).
 =item C<mk_ro_class_accessor($attribute [, $default ])>
 
 Same as C<mk_class_accessor> except that the attribute is read-only.  As with
-readonly static fields in C#, the value can only be set during class
+read-only static fields in C#, the value can only be set during class
 initialization, i.e. in the mk_ro_class_accessor() call itself.
 
 =item C<mk_ro_translucent_accessor($attribute [, $default ])>
 
 Same as C<mk_translucent_accessor> except that the attribute is read-only.  As
-with readonly static fields in C#, the class attribute value, which here doubles
-as the translucent object attribute default value, can only be set during class
-initialization, i.e. in the mk_ro_class_accessor() call itself, and as with
-other readonly fields in C#, the object attribute value can only be set when
-constructing/cloning the object.
+with read-only static fields in C#, the class attribute value, which here
+doubles as the translucent object attribute default value, can only be set
+during class initialization, i.e. in the mk_ro_class_accessor() call itself, and
+as with other read-only fields in C#, the object attribute value can only be set
+when constructing/cloning the object.
 
 =item C<mk_ro_object_accessor($attribute [, $default ])>
 
 Same as C<mk_object_accessor> except that the attribute is read-only.  As with
-readonly fields in C#, the value can only be set when constructing/cloning the
+read-only fields in C#, the value can only be set when constructing/cloning the
 object.
 
 =back
@@ -554,8 +566,8 @@ Class::Data::Inheritable::Translucent as of version 1.00
 
 Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
 
-Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014 Steve Hay.  All
-rights reserved.
+Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014-2015 Steve Hay.
+All rights reserved.
 
 =head1 LICENCE
 

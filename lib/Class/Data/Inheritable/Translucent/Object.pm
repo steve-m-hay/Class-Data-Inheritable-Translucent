@@ -7,7 +7,7 @@
 #   constructor/clone methods with separated initialization.
 #
 # COPYRIGHT
-#   Copyright (C) 2014 Steve Hay.  All rights reserved.
+#   Copyright (C) 2014-2015 Steve Hay.  All rights reserved.
 #
 # LICENCE
 #   This module is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,7 @@ use 5.008001;
 use strict;
 use warnings;
 
-use parent qw(Class::Data::Inheritable::Translucent);
+use parent qw(Class::Data::Inheritable::Translucent::Base);
 
 use Carp qw(croak);
 
@@ -53,6 +53,8 @@ sub new {
 
     my $self = bless {}, $class;
 
+    $self->_initializing(1);
+
     # If there is an odd number of @args then the first should be an object to
     # copy into our new object. Otherwise leave the new object's attributes
     # uninitialized to provide translucency where appropriate.
@@ -64,6 +66,8 @@ sub new {
     # Initialize attributes with any (remaining) given arguments, overriding any
     # copied or translucent attributes in the process.
     $self->initialize(@args);
+
+    $self->_initializing(0);
 
     return $self;
 }
@@ -89,49 +93,11 @@ sub copy {
         croak("Cannot copy attributes from instance of alien class '$class'");
     }
 
-    my @attrs = $self->_get_attrs();
+    # If the object has already been initialized then we must only copy
+    # non-read-only attributes.
+    my @attrs = $self->_get_editable_attrs();
     foreach my $attr (@attrs) {
         $self->$attr($source->$attr());
-    }
-
-    return 1;
-}
-
-sub reset {
-    my($self, $source) = @_;
-    croak("reset() is an object method, not a class method") unless ref $self;
-
-    my @attrs = $self->_get_attrs();
-    my $attrs = $self->attrs();
-    foreach my $attr (@attrs) {
-        delete $attrs->{$attr};
-    }
-
-    $self->initialize();
-
-    return 1;
-}
-
-#===============================================================================
-# PROTECTED METHODS
-#===============================================================================
-
-#-------------------------------------------------------------------------------
-# Object methods
-#-------------------------------------------------------------------------------
-
-sub initialize {
-    my($self, %args) = @_;
-    croak("initialize() is an object method, not a class method") unless ref $self;
-
-    my @attrs = $self->_get_attrs();
-    foreach my $attr (@attrs) {
-        $self->$attr(delete $args{$attr}) if exists $args{$attr};
-    }
-
-    if (%args) {
-        carp("initialize() ignored the following unknown attributes: " .
-             join(', ', map { "'$_'" } sort keys %args));
     }
 
     return 1;
@@ -200,7 +166,8 @@ Attributes may be initialized by the constructor, either explicitly, or by
 copying another object, or via a separated initialize() method which can be
 overridden in subclasses.  A copy() method is also provided to copy the
 attributes of one object to another, and a reset() method can be used to restore
-an object's attributes to their default values (translucent or otherwise).
+an object's non-read-only attributes to their default values (translucent or
+otherwise).
 
 Note that all of these methods, just like the accessor methods created by
 L<Class::Data::Inheritable::Translucent>, only perform shallow copies of
@@ -241,10 +208,12 @@ C++.
 
 =item C<copy($obj)>
 
-Sets the attributes of the invocant object to the same values as those of the
-given object, assuming that the given object is an instance of the same class
-(or a subclass) as the invocant object (otherwise it throws an exception), and
-returns 1.
+Sets the non-read-only attributes of the invocant object to the same values as
+those of the given object, assuming that the given object is an instance of the
+same class (or a subclass) as the invocant object (otherwise it throws an
+exception), and returns 1.
+
+Read-only attributes, of course, cannot be copied so will be left unchanged.
 
 As noted earlier, but of particular relevance here, this only performs a shallow
 copy of the attributes.  Therefore, the two objects will end up sharing some
@@ -252,31 +221,11 @@ data if any attribute values are references.
 
 =item C<initialize([ %args ])>
 
-Sets the attributes of the invocant object from the given named parameter list
-(hash) and returns 1.  If any given attributes are not object attributes or
-translucent attributes of the class (or of any superclass) to which the
-invocant object belongs then they are ignored and initialize() will issue a
-warning about them and return 0.
-
-This method is called when constructing or cloning an object.  Subclasses may
-override it to provide custom initialization, but it is not really intended to
-be called directly.
+Inherited from L<Class::Data::Inheritable::Translucent::Base>.
 
 =item C<reset()>
 
-Resets an object's attributes to reveal their (translucent or otherwise) class
-default values by deleting all the attributes from the object and then calling
-initialize() with no arguments.  This has the effect of setting the object to
-the same state as a new object constructed with the default constructor.
-
-Resets an object's attributes to reveal their (translucent or otherwise) class
-default values by deleting all the attributes from the object and then calling
-initialize() with no arguments.
-
-This has the effect of setting the object to the same state as a new object
-constructed with a default constructor call (i.e. new() with no arguments).
-
-Returns 1.
+Inherited from L<Class::Data::Inheritable::Translucent::Base>.
 
 =back
 
@@ -299,12 +248,6 @@ as follows (a la L<perldiag>):
 class, which is not an instance of the same class (or of a superclass) as the
 object you are trying to copy values to.
 
-=item initialize() ignored the following unknown attributes: %s
-
-(W) You passed some attributes to initialize() (perhaps via new() or clone())
-that are not object attributes or translucent attributes of the class (or of any
-superclasses) to which the object being initialized (or constructed) belongs.
-
 =item %s() is a class method, not an object method
 
 (F) You tried to invoke the specified method on an object, but it can only be
@@ -324,6 +267,7 @@ invoked on an object.
 
 =head1 SEE ALSO
 
+L<Class::Data::Inheritable::Translucent::Singleton>,
 L<Class::Data::Inheritable::Translucent>.
 
 =head1 AUTHOR
@@ -332,7 +276,7 @@ Steve Hay E<lt>F<shay@cpan.org>E<gt>.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2014 Steve Hay.  All rights reserved.
+Copyright (C) 2014-2015 Steve Hay.  All rights reserved.
 
 =head1 LICENCE
 

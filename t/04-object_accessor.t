@@ -11,7 +11,7 @@ package Foo;
 use base 'Class::Data::Inheritable::Translucent';
 
 __PACKAGE__->mk_object_accessor(baz => "object");
-__PACKAGE__->mk_ro_object_accessor(ro => "readonly");
+__PACKAGE__->mk_ro_object_accessor(ro => "read-only");
 
 sub new {
     return bless {}, shift;
@@ -26,7 +26,7 @@ is($obj->baz, "object a", "new value Ok");
 delete $obj->{baz};
 is($obj->baz, "object", "reset Ok");
 
-is($obj->ro, "readonly", "readonly attribute Ok");
+is($obj->ro, "read-only", "read-only attribute Ok");
 eval { $obj->ro(2) };
 ok $@ =~ /^'ro' is a read-only attribute/,
-   "readonly attribute can't be written";
+   "read-only attribute can't be written";
