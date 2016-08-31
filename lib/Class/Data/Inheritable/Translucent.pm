@@ -475,10 +475,13 @@ NEED TO BE MODIFIED.>
 
 Patches, bug reports, suggestions or any other feedback is welcome.
 
-Bugs can be reported on the CPAN Request Tracker at
+Patches can be sent as GitHub pull requests at
+F<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent/pulls>.
+
+Bug reports and suggestions can be made on the CPAN Request Tracker at
 F<https://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
 
-Active bugs on the CPAN Request Tracker can be viewed at
+Currently active requests on the CPAN Request Tracker can be viewed at
 F<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Queue=Class-Data-Inheritable-Translucent>.
 
 Please test this distribution.  See CPAN Testers Reports at
@@ -550,6 +553,9 @@ F<http://search.cpan.org/dist/Class-Data-Inheritable-Translucent/> or
 F<http://www.cpan.org/authors/id/S/SH/SHAY/> or
 
 F<http://www.cpan.org/modules/by-module/Class/>.
+
+The latest source code is available from GitHub at
+F<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent>.
 
 =head1 INSTALLATION
 
