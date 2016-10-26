@@ -8,9 +8,8 @@
 #   object attributes with default values.
 #
 # COPYRIGHT
-#   Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
-#   Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014-2015 Steve
-#   Hay.  All rights reserved.
+#   Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
+#   Copyright (C) 2009, 2011, 2014-2015 Steve Hay.  All rights reserved.
 #
 # LICENCE
 #   This module is free software; you can redistribute it and/or modify it under
@@ -563,17 +562,16 @@ See the F<INSTALL> file.
 
 =head1 AUTHOR
 
-Ryan McGuigan
+Ryan McGuigan.
 
 Steve Hay E<lt>F<shay@cpan.org>E<gt> is now maintaining
-Class::Data::Inheritable::Translucent as of version 1.00
+Class::Data::Inheritable::Translucent as of version 1.00.
 
 =head1 COPYRIGHT
 
-Version 0.01 Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
+Copyright (C) 2005 Ryan McGuigan.  All rights reserved.
 
-Changes in Version 1.00 onwards Copyright (C) 2009, 2011, 2014-2015 Steve Hay.
-All rights reserved.
+Copyright (C) 2009, 2011, 2014-2015 Steve Hay.  All rights reserved.
 
 =head1 LICENCE
 
