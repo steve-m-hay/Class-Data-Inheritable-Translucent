@@ -1,24 +1,24 @@
-Artistic
-Changes
-Copying
-INSTALL
-LICENCE
-MANIFEST
-MANIFEST.SKIP
-Makefile.PL
-README
-lib/Class/Data/Inheritable/Translucent.pm
-lib/Class/Data/Inheritable/Translucent/Base.pm
-lib/Class/Data/Inheritable/Translucent/Object.pm
-lib/Class/Data/Inheritable/Translucent/Singleton.pm
-t/00-load.t
-t/01-basic_tests.t
-t/02-nonhash_objects.t
-t/03-class_accessor.t
-t/04-object_accessor.t
-t/05-object_constructor.t
-t/06-singleton_constructor.t
-t/changes.t
-t/critic.t
-t/pod-coverage.t
-t/pod.t
+Artistic                                 The "Artistic License"
+Changes                                  Differences from previous version
+Copying                                  The GNU General Public License
+INSTALL                                  Detailed installation instructions
+lib/Class/Data/Inheritable/Translucent.pm           Class::Data::Inheritable::Translucent Perl module
+lib/Class/Data/Inheritable/Translucent/Base.pm      Class::Data::Inheritable::Translucent::Base Perl module
+lib/Class/Data/Inheritable/Translucent/Object.pm    Class::Data::Inheritable::Translucent::Object Perl module
+lib/Class/Data/Inheritable/Translucent/Singleton.pm Class::Data::Inheritable::Translucent::Singleton Perl module
+LICENCE                                  The Licence
+Makefile.PL                              Makefile writer
+MANIFEST                                 This list of files
+MANIFEST.SKIP                            Manifest skip specs
+README                                   The Instructions
+t/00-load.t                              Test script
+t/01-basic_tests.t                       Test script
+t/02-nonhash_objects.t                   Test script
+t/03-class_accessor.t                    Test script
+t/04-object_accessor.t                   Test script
+t/05-object_constructor.t                Test script
+t/06-singleton_constructor.t             Test script
+t/changes.t                              See if Changes file format is OK
+t/critic.t                               See if coding style is OK
+t/pod.t                                  See if POD is OK
+t/pod-coverage.t                         See if POD coverage is OK
