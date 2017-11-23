@@ -475,22 +475,22 @@ NEED TO BE MODIFIED.>
 Patches, bug reports, suggestions or any other feedback is welcome.
 
 Patches can be sent as GitHub pull requests at
-F<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent/pulls>.
+L<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent/pulls>.
 
 Bug reports and suggestions can be made on the CPAN Request Tracker at
-F<https://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
+L<https://rt.cpan.org/Public/Bug/Report.html?Queue=Class-Data-Inheritable-Translucent>.
 
 Currently active requests on the CPAN Request Tracker can be viewed at
-F<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Queue=Class-Data-Inheritable-Translucent>.
+L<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Queue=Class-Data-Inheritable-Translucent>.
 
 Please test this distribution.  See CPAN Testers Reports at
-F<http://www.cpantesters.org/> for details of how to get involved.
+L<http://www.cpantesters.org/> for details of how to get involved.
 
 Previous test results on CPAN Testers Reports can be viewed at
-F<http://www.cpantesters.org/distro/C/Class-Data-Inheritable-Translucent.html>.
+L<http://www.cpantesters.org/distro/C/Class-Data-Inheritable-Translucent.html>.
 
 Please rate this distribution on CPAN Ratings at
-F<http://cpanratings.perl.org/rate/?distribution=Class-Data-Inheritable-Translucent>.
+L<http://cpanratings.perl.org/rate/?distribution=Class-Data-Inheritable-Translucent>.
 
 =head1 SEE ALSO
 
@@ -545,16 +545,16 @@ Class::Data::Inheritable module, written by Damian Conway.
 The latest version of this module is available from CPAN (see
 L<perlmodlib/"CPAN"> for details) at
 
-F<https://metacpan.org/release/Class-Data-Inheritable-Translucent> or
+L<https://metacpan.org/release/Class-Data-Inheritable-Translucent> or
 
-F<http://search.cpan.org/dist/Class-Data-Inheritable-Translucent/> or
+L<http://search.cpan.org/dist/Class-Data-Inheritable-Translucent/> or
 
-F<http://www.cpan.org/authors/id/S/SH/SHAY/> or
+L<http://www.cpan.org/authors/id/S/SH/SHAY/> or
 
-F<http://www.cpan.org/modules/by-module/Class/>.
+L<http://www.cpan.org/modules/by-module/Class/>.
 
 The latest source code is available from GitHub at
-F<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent>.
+L<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent>.
 
 =head1 INSTALLATION
 
