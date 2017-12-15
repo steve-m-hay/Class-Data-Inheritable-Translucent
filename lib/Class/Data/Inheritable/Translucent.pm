@@ -564,7 +564,7 @@ See the F<INSTALL> file.
 
 Ryan McGuigan.
 
-Steve Hay E<lt>F<shay@cpan.org>E<gt> is now maintaining
+Steve Hay E<lt>L<shay@cpan.org|mailto:shay@cpan.org>E<gt> is now maintaining
 Class::Data::Inheritable::Translucent as of version 1.00.
 
 =head1 COPYRIGHT
