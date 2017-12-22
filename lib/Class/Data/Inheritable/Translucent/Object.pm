@@ -117,42 +117,42 @@ Class::Data::Inheritable::Translucent::Object - Add constructor/clone methods to
 
 =head1 SYNOPSIS
 
-  package Bar;
-  use parent qw(Class::Data::Inheritable::Translucent::Object);
+    package Bar;
+    use parent qw(Class::Data::Inheritable::Translucent::Object);
 
-  Bar->mk_object_accessor(attr => 0);
+    Bar->mk_object_accessor(attr => 0);
 
-  # Class constructor
-  my $obj1 = Bar->new();
-  my $obj2 = Bar->new(attr => 1);
-  my $obj3 = Bar->new($obj2);
-  my $obj4 = Bar->new($obj2, attr => 2);
+    # Class constructor
+    my $obj1 = Bar->new();
+    my $obj2 = Bar->new(attr => 1);
+    my $obj3 = Bar->new($obj2);
+    my $obj4 = Bar->new($obj2, attr => 2);
 
-  # Object clone
-  my $obj5 = $obj2->clone();
-  my $obj6 = $obj2->clone(attr => 3);
+    # Object clone
+    my $obj5 = $obj2->clone();
+    my $obj6 = $obj2->clone(attr => 3);
 
-  # Object copy
-  my $obj7 = $obj2->copy();
+    # Object copy
+    my $obj7 = $obj2->copy();
 
-  # Object reset
-  $obj7->reset();
+    # Object reset
+    $obj7->reset();
 
-  package Bar2;
-  use parent qw(Bar);
+    package Bar2;
+    use parent qw(Bar);
 
-  my $_Count = 0;
+    my $_Count = 0;
 
-  # Separated, overridable, object initialization
-  sub initialize {
-      my($self, %args) = @_;
-      $_Count++;
-      return $self->SUPER::initialize(%args);
-  }
+    # Separated, overridable, object initialization
+    sub initialize {
+        my($self, %args) = @_;
+        $_Count++;
+        return $self->SUPER::initialize(%args);
+    }
 
-  sub DESTROY {
-      $_Count--;
-  }
+    sub DESTROY {
+        $_Count--;
+    }
 
 =head1 DESCRIPTION
 
@@ -264,6 +264,14 @@ abstract base class, i.e. it cannot be instantiated.
 invoked on an object.
 
 =back
+
+=head1 EXPORTS
+
+I<None>.
+
+=head1 KNOWN BUGS
+
+I<None>.
 
 =head1 SEE ALSO
 

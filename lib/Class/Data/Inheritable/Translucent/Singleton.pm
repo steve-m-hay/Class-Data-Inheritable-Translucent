@@ -115,33 +115,33 @@ Class::Data::Inheritable::Translucent::Singleton - Add a singleton constructor m
 
 =head1 SYNOPSIS
 
-  package Baz;
-  use parent qw(Class::Data::Inheritable::Translucent::Singleton);
+    package Baz;
+    use parent qw(Class::Data::Inheritable::Translucent::Singleton);
 
-  Baz->mk_object_accessor(attr => 0);
+    Baz->mk_object_accessor(attr => 0);
 
-  # Class constructor
-  my $obj1 = Baz->instance(attr => 1);
-  my $obj2 = Baz->instance(attr => 2); # same object as $obj1
+    # Class constructor
+    my $obj1 = Baz->instance(attr => 1);
+    my $obj2 = Baz->instance(attr => 2); # same object as $obj1
 
-  # Object reset
-  $obj1->reset(); # $obj1 and $obj2 now both have attr == 0
+    # Object reset
+    $obj1->reset(); # $obj1 and $obj2 now both have attr == 0
 
-  package Baz2;
-  use parent qw(Baz);
+    package Baz2;
+    use parent qw(Baz);
 
-  my $_Count = 0;
+    my $_Count = 0;
 
-  # Separated, overridable, object initialization
-  sub initialize {
-      my($self, %args) = @_;
-      $_Count++;
-      return $self->SUPER::initialize(%args);
-  }
+    # Separated, overridable, object initialization
+    sub initialize {
+        my($self, %args) = @_;
+        $_Count++;
+        return $self->SUPER::initialize(%args);
+    }
 
-  sub DESTROY {
+    sub DESTROY {
       $_Count--;
-  }
+    }
 
 =head1 DESCRIPTION
 
@@ -225,6 +225,14 @@ invoked on a class name.
 abstract base class, i.e. it cannot be instantiated.
 
 =back
+
+=head1 EXPORTS
+
+I<None>.
+
+=head1 KNOWN BUGS
+
+I<None>.
 
 =head1 SEE ALSO
 

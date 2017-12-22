@@ -270,48 +270,48 @@ Class::Data::Inheritable::Translucent - Inheritable, overridable, translucent cl
 
 =head1 SYNOPSIS
 
-  package Foo;
-  use parent qw(Class::Data::Inheritable::Translucent);
-  sub new { bless {}, shift }
+    package Foo;
+    use parent qw(Class::Data::Inheritable::Translucent);
+    sub new { bless {}, shift }
 
-  # Read/write attributes
-  Foo->mk_class_accessor(cattr => "bar");
-  Foo->mk_translucent_accessor(tattr => "bar");
-  Foo->mk_object_accessor(oattr => "bar");
+    # Read/write attributes
+    Foo->mk_class_accessor(cattr => "bar");
+    Foo->mk_translucent_accessor(tattr => "bar");
+    Foo->mk_object_accessor(oattr => "bar");
 
-  # Read-only attributes
-  Foo->mk_ro_class_accessor(foo => 1);
-  Foo->mk_ro_translucent_accessor(bar => 1);
-  Foo->mk_ro_object_accessor(baz => 1);
+    # Read-only attributes
+    Foo->mk_ro_class_accessor(foo => 1);
+    Foo->mk_ro_translucent_accessor(bar => 1);
+    Foo->mk_ro_object_accessor(baz => 1);
 
-  my $obj = Foo->new;
-  print $obj->cattr; # prints "bar"
-  print $obj->tattr; # prints "bar"
-  print $obj->oattr; # prints "bar"
-  print Foo->cattr;  # prints "bar"
-  print Foo->tattr;  # prints "bar"
+    my $obj = Foo->new;
+    print $obj->cattr; # prints "bar"
+    print $obj->tattr; # prints "bar"
+    print $obj->oattr; # prints "bar"
+    print Foo->cattr;  # prints "bar"
+    print Foo->tattr;  # prints "bar"
 
-  $obj->cattr("baz");
-  $obj->tattr("baz");
-  $obj->oattr("baz");
-  print $obj->cattr; # prints "baz"
-  print $obj->tattr; # prints "baz"
-  print $obj->oattr; # prints "baz"
-  print Foo->cattr;  # prints "baz"
-  print Foo->tattr;  # prints "bar"
+    $obj->cattr("baz");
+    $obj->tattr("baz");
+    $obj->oattr("baz");
+    print $obj->cattr; # prints "baz"
+    print $obj->tattr; # prints "baz"
+    print $obj->oattr; # prints "baz"
+    print Foo->cattr;  # prints "baz"
+    print Foo->tattr;  # prints "bar"
 
-  Foo->cattr("qux");
-  Foo->tattr("qux");
-  print $obj->cattr; # prints "qux"
-  print $obj->tattr; # prints "baz"
-  print Foo->cattr;  # prints "qux"
-  print Foo->tattr;  # prints "qux"
+    Foo->cattr("qux");
+    Foo->tattr("qux");
+    print $obj->cattr; # prints "qux"
+    print $obj->tattr; # prints "baz"
+    print Foo->cattr;  # prints "qux"
+    print Foo->tattr;  # prints "qux"
 
-  delete $obj->{tattr};
-  delete $obj->{oattr};
-  print $obj->tattr; # prints "qux"
-  print $obj->oattr; # prints "bar"
-  print Foo->tattr;  # prints "qux"
+    delete $obj->{tattr};
+    delete $obj->{oattr};
+    print $obj->tattr; # prints "qux"
+    print $obj->oattr; # prints "bar"
+    print Foo->tattr;  # prints "qux"
 
 =head1 DESCRIPTION
 
@@ -455,6 +455,10 @@ invoked on an object.
 
 =back
 
+=head1 EXPORTS
+
+I<None>.
+
 =head1 COMPATIBILITY
 
 Before version 2.00 of this module, an object attribute that had been set to
@@ -469,6 +473,10 @@ particular if you have overridden attrs(), this is done with
 
 B<THIS IS AN INCOMPATIBLE CHANGE.  EXISTING SOFTWARE THAT USES THIS FEATURE WILL
 NEED TO BE MODIFIED.>
+
+=head1 KNOWN BUGS
+
+I<None>.
 
 =head1 FEEDBACK
 

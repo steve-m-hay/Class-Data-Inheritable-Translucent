@@ -240,6 +240,14 @@ invoked on an object.
 
 =back
 
+=head1 EXPORTS
+
+I<None>.
+
+=head1 KNOWN BUGS
+
+I<None>.
+
 =head1 SEE ALSO
 
 L<Class::Data::Inheritable::Translucent::Object>,
