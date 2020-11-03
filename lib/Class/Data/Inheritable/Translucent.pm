@@ -492,13 +492,13 @@ Currently active requests on the CPAN Request Tracker can be viewed at
 L<https://rt.cpan.org/Public/Dist/Display.html?Status=Active;Queue=Class-Data-Inheritable-Translucent>.
 
 Please test this distribution.  See CPAN Testers Reports at
-L<http://www.cpantesters.org/> for details of how to get involved.
+L<https://www.cpantesters.org/> for details of how to get involved.
 
 Previous test results on CPAN Testers Reports can be viewed at
-L<http://www.cpantesters.org/distro/C/Class-Data-Inheritable-Translucent.html>.
+L<https://www.cpantesters.org/distro/C/Class-Data-Inheritable-Translucent.html>.
 
 Please rate this distribution on CPAN Ratings at
-L<http://cpanratings.perl.org/rate/?distribution=Class-Data-Inheritable-Translucent>.
+L<https://cpanratings.perl.org/rate/?distribution=Class-Data-Inheritable-Translucent>.
 
 =head1 SEE ALSO
 
@@ -555,9 +555,9 @@ L<perlmodlib/"CPAN"> for details) at
 
 L<https://metacpan.org/release/Class-Data-Inheritable-Translucent> or
 
-L<http://www.cpan.org/authors/id/S/SH/SHAY/> or
+L<https://www.cpan.org/authors/id/S/SH/SHAY/> or
 
-L<http://www.cpan.org/modules/by-module/Class/>.
+L<https://www.cpan.org/modules/by-module/Class/>.
 
 The latest source code is available from GitHub at
 L<https://github.com/steve-m-hay/Class-Data-Inheritable-Translucent>.
