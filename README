@@ -1,198 +1,203 @@
 NAME
+
     Class::Data::Inheritable::Translucent - Inheritable, overridable,
     translucent class data / object attributes
 
 SYNOPSIS
-      package Foo;
-      use parent qw(Class::Data::Inheritable::Translucent);
-      sub new { bless {}, shift }
 
-      # Read/write attributes
-      Foo->mk_class_accessor(cattr => "bar");
-      Foo->mk_translucent_accessor(tattr => "bar");
-      Foo->mk_object_accessor(oattr => "bar");
+    package Foo;
+    use parent qw(Class::Data::Inheritable::Translucent);
+    sub new { bless {}, shift }
 
-      # Read-only attributes
-      Foo->mk_ro_class_accessor(foo => 1);
-      Foo->mk_ro_translucent_accessor(bar => 1);
-      Foo->mk_ro_object_accessor(baz => 1);
+    # Read/write attributes
+    Foo->mk_class_accessor(cattr => "bar");
+    Foo->mk_translucent_accessor(tattr => "bar");
+    Foo->mk_object_accessor(oattr => "bar");
 
-      my $obj = Foo->new;
-      print $obj->cattr; # prints "bar"
-      print $obj->tattr; # prints "bar"
-      print $obj->oattr; # prints "bar"
-      print Foo->cattr;  # prints "bar"
-      print Foo->tattr;  # prints "bar"
+    # Read-only attributes
+    Foo->mk_ro_class_accessor(foo => 1);
+    Foo->mk_ro_translucent_accessor(bar => 1);
+    Foo->mk_ro_object_accessor(baz => 1);
 
-      $obj->cattr("baz");
-      $obj->tattr("baz");
-      $obj->oattr("baz");
-      print $obj->cattr; # prints "baz"
-      print $obj->tattr; # prints "baz"
-      print $obj->oattr; # prints "baz"
-      print Foo->cattr;  # prints "baz"
-      print Foo->tattr;  # prints "bar"
+    my $obj = Foo->new;
+    print $obj->cattr; # prints "bar"
+    print $obj->tattr; # prints "bar"
+    print $obj->oattr; # prints "bar"
+    print Foo->cattr;  # prints "bar"
+    print Foo->tattr;  # prints "bar"
 
-      Foo->cattr("qux");
-      Foo->tattr("qux");
-      print $obj->cattr; # prints "qux"
-      print $obj->tattr; # prints "baz"
-      print Foo->cattr;  # prints "qux"
-      print Foo->tattr;  # prints "qux"
+    $obj->cattr("baz");
+    $obj->tattr("baz");
+    $obj->oattr("baz");
+    print $obj->cattr; # prints "baz"
+    print $obj->tattr; # prints "baz"
+    print $obj->oattr; # prints "baz"
+    print Foo->cattr;  # prints "baz"
+    print Foo->tattr;  # prints "bar"
 
-      delete $obj->{tattr};
-      delete $obj->{oattr};
-      print $obj->tattr; # prints "qux"
-      print $obj->oattr; # prints "bar"
-      print Foo->tattr;  # prints "qux"
+    Foo->cattr("qux");
+    Foo->tattr("qux");
+    print $obj->cattr; # prints "qux"
+    print $obj->tattr; # prints "baz"
+    print Foo->cattr;  # prints "qux"
+    print Foo->tattr;  # prints "qux"
 
-      package Bar;
-      use parent qw(Class::Data::Inheritable::Translucent::Object);
+    delete $obj->{tattr};
+    delete $obj->{oattr};
+    print $obj->tattr; # prints "qux"
+    print $obj->oattr; # prints "bar"
+    print Foo->tattr;  # prints "qux"
 
-      Bar->mk_object_accessor(attr => 0);
+    package Bar;
+    use parent qw(Class::Data::Inheritable::Translucent::Object);
 
-      # Class constructor
-      my $obj1 = Bar->new();
-      my $obj2 = Bar->new(attr => 1);
-      my $obj3 = Bar->new($obj2);
-      my $obj4 = Bar->new($obj2, attr => 2);
+    Bar->mk_object_accessor(attr => 0);
 
-      # Object clone
-      my $obj5 = $obj2->clone();
-      my $obj6 = $obj2->clone(attr => 3);
+    # Class constructor
+    my $obj1 = Bar->new();
+    my $obj2 = Bar->new(attr => 1);
+    my $obj3 = Bar->new($obj2);
+    my $obj4 = Bar->new($obj2, attr => 2);
 
-      # Object copy
-      my $obj7 = $obj2->copy();
+    # Object clone
+    my $obj5 = $obj2->clone();
+    my $obj6 = $obj2->clone(attr => 3);
 
-      # Object reset
-      $obj7->reset();
+    # Object copy
+    my $obj7 = $obj2->copy();
 
-      package Bar2;
-      use parent qw(Bar);
+    # Object reset
+    $obj7->reset();
 
-      my $_Count = 0;
+    package Bar2;
+    use parent qw(Bar);
 
-      # Separated, overridable, object initialization
-      sub initialize {
-          my($self, %args) = @_;
-          $_Count++;
-          return $self->SUPER::initialize(%args);
-      }
+    my $_Count = 0;
 
-      sub DESTROY {
-          $_Count--;
-      }
+    # Separated, overridable, object initialization
+    sub initialize {
+        my($self, %args) = @_;
+        $_Count++;
+        return $self->SUPER::initialize(%args);
+    }
 
-      package Baz;
-      use parent qw(Class::Data::Inheritable::Translucent::Singleton);
+    sub DESTROY {
+        $_Count--;
+    }
 
-      Baz->mk_object_accessor(attr => 0);
+    package Baz;
+    use parent qw(Class::Data::Inheritable::Translucent::Singleton);
 
-      # Class constructor
-      my $obj1 = Baz->instance(attr => 1);
-      my $obj2 = Baz->instance(attr => 2); # same object as $obj1
+    Baz->mk_object_accessor(attr => 0);
 
-      # Object reset
-      $obj1->reset(); # $obj1 and $obj2 now both have attr == 0
+    # Class constructor
+    my $obj1 = Baz->instance(attr => 1);
+    my $obj2 = Baz->instance(attr => 2); # same object as $obj1
 
-      package Baz2;
-      use parent qw(Baz);
+    # Object reset
+    $obj1->reset(); # $obj1 and $obj2 now both have attr == 0
 
-      my $_Count = 0;
+    package Baz2;
+    use parent qw(Baz);
 
-      # Separated, overridable, object initialization
-      sub initialize {
-          my($self, %args) = @_;
-          $_Count++;
-          return $self->SUPER::initialize(%args);
-      }
+    my $_Count = 0;
 
-      sub DESTROY {
-          $_Count--;
-      }
+    # Separated, overridable, object initialization
+    sub initialize {
+        my($self, %args) = @_;
+        $_Count++;
+        return $self->SUPER::initialize(%args);
+    }
+
+    sub DESTROY {
+      $_Count--;
+    }
 
 DESCRIPTION
-    This module is based on Class::Data::Inheritable; the
-    mk_class_accessor() method is largely the same as
-    Class::Data::Inheritable's mk_classdata() method, but
-    mk_translucent_accessor() creates class data accessors that double as
-    translucent object attribute accessors. Accessors for plain object
+
+    This module is based on Class::Data::Inheritable; the mk_class_accessor()
+    method is largely the same as Class::Data::Inheritable's mk_classdata()
+    method, but mk_translucent_accessor() creates class data accessors that
+    double as translucent object attribute accessors. Accessors for plain object
     attributes can also be created with mk_object_accessor(). Read-only
-    accessors for all three types of data/attributes can also be created
-    with mk_ro_class_accessor(), mk_ro_translucent_accessor() and
+    accessors for all three types of data/attributes can also be created with
+    mk_ro_class_accessor(), mk_ro_translucent_accessor() and
     mk_ro_object_accessor().
 
     Your class should inherit from Class::Data::Inheritable::Translucent and
-    call the relevant mk_*_accessor() methods during its initialization. If
-    you are making use of object accessor methods (translucent or otherwise)
-    then your class will also need to have a constructor method to create
-    objects. By default, the objects are assumed to be hash references with
-    their attributes stored directly inside them, i.e. the value of object
-    $obj's attribute $attr is assumed to be stored in $obj->{$attr}. See the
-    attrs() method on how to change that. If a simple hash-based object is
-    all you need then you can have a constructor method provided for you by
-    inheriting from Class::Data::Inheritable::Translucent::Object or
+    call the relevant mk_*_accessor() methods during its initialization. If you
+    are making use of object accessor methods (translucent or otherwise) then
+    your class will also need to have a constructor method to create objects. By
+    default, the objects are assumed to be hash references with their attributes
+    stored directly inside them, i.e. the value of object $obj's attribute $attr
+    is assumed to be stored in $obj->{$attr}. See the attrs() method on how to
+    change that. If a simple hash-based object is all you need then you can have
+    a constructor method provided for you by inheriting from
+    Class::Data::Inheritable::Translucent::Object or
     Class::Data::Inheritable::Translucent::Singleton instead.
 
     Class::Data::Inheritable::Translucent::Object is an abstract base class
     extending Class::Data::Inheritable::Translucent with constructor/clone
-    methods with separated initialization. The objects constructed are
-    simple hash-based objects compatible with the accessor methods installed
-    by Class::Data::Inheritable::Translucent.
+    methods with separated initialization. The objects constructed are simple
+    hash-based objects compatible with the accessor methods installed by
+    Class::Data::Inheritable::Translucent.
 
-    Attributes may be initialized by the constructor, either explicitly, or
-    by copying another object, or via a separated initialize() method which
-    can be overridden in subclasses. A copy() method is also provided to
-    copy the attributes of one object to another, and a reset() method can
-    be used to restore an object's non-read-only attributes to their default
-    values (translucent or otherwise).
-
-    Class::Data::Inheritable::Translucent::Singleton is an abstract base
-    class extending Class::Data::Inheritable::Translucent with a singleton
-    constructor method with separated initialization. The objects
-    constructed are simple hash-based objects compatible with the accessor
-    methods installed by Class::Data::Inheritable::Translucent.
-
-    The singleton design pattern behaviour is inherited from either
-    Apache::Singleton or Class::Singleton, whichever is found first (looking
-    in that order); an exception will be thrown if neither is available.
-    Apache::Singleton is more flexible since it allows one instance per
-    request when run in a mod_perl environment (but still permits only one
-    instance per process otherwise).
-
-    Attributes may be initialized by the constructor, either explicitly, or
-    via a separated initialize() method. A reset() method can be used to
-    restore the object's non-read-only attributes to their default values
+    Attributes may be initialized by the constructor, either explicitly, or by
+    copying another object, or via a separated initialize() method which can be
+    overridden in subclasses. A copy() method is also provided to copy the
+    attributes of one object to another, and a reset() method can be used to
+    restore an object's non-read-only attributes to their default values
     (translucent or otherwise).
 
+    Class::Data::Inheritable::Translucent::Singleton is an abstract base class
+    extending Class::Data::Inheritable::Translucent with a singleton constructor
+    method with separated initialization. The objects constructed are simple
+    hash-based objects compatible with the accessor methods installed by
+    Class::Data::Inheritable::Translucent.
+
+    The singleton design pattern behaviour is inherited from either
+    Apache::Singleton or Class::Singleton, whichever is found first (looking in
+    that order); an exception will be thrown if neither is available.
+    Apache::Singleton is more flexible since it allows one instance per request
+    when run in a mod_perl environment (but still permits only one instance per
+    process otherwise).
+
+    Attributes may be initialized by the constructor, either explicitly, or via
+    a separated initialize() method. A reset() method can be used to restore the
+    object's non-read-only attributes to their default values (translucent or
+    otherwise).
+
     Note that all of these methods only perform shallow copies of attribute
-    values. Therefore, different classes and/or objects will end up sharing
-    some data if any attribute values are set to references.
+    values. Therefore, different classes and/or objects will end up sharing some
+    data if any attribute values are set to references.
 
 COMPATIBILITY
-    Before version 2.00 of this module, an object attribute that had been
-    set to override translucent class data could be "reset" to reveal the
-    inherited class data value by setting it to the undefined value.
 
-    As of version 2.00 of this module, the attribute must now be deleted
-    from the object in order to have the same effect. If your objects are
-    hashrefs then this is done simply with "delete $object->{$attribute}";
-    more generally, and in particular if you have overridden attrs(), this
-    is done with "delete $object->attrs()->{$attribute}".
+    Before version 2.00 of this module, an object attribute that had been set to
+    override translucent class data could be "reset" to reveal the inherited
+    class data value by setting it to the undefined value.
+
+    As of version 2.00 of this module, the attribute must now be deleted from
+    the object in order to have the same effect. If your objects are hashrefs
+    then this is done simply with "delete $object->{$attribute}"; more
+    generally, and in particular if you have overridden attrs(), this is done
+    with "delete $object->attrs()->{$attribute}".
 
     THIS IS AN INCOMPATIBLE CHANGE. EXISTING SOFTWARE THAT USES THIS FEATURE
     WILL NEED TO BE MODIFIED.
 
 INSTALLATION
+
     See the INSTALL file.
 
 COPYRIGHT
-    Copyright (C) 2005 Ryan McGuigan. All rights reserved.
 
+    Copyright (C) 2005 Ryan McGuigan. All rights reserved.
     Copyright (C) 2009, 2011, 2014-2015 Steve Hay. All rights reserved.
 
 LICENCE
-    This distribution is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself, i.e. under the terms of
-    either the GNU General Public License or the Artistic License, as
-    specified in the LICENCE file.
+
+    This distribution is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself, i.e. under the terms of either the GNU
+    General Public License or the Artistic License, as specified in the LICENCE
+    file.
